@@ -11,7 +11,6 @@ import (
 
 type IServer interface {
 	Start()
-	Handler() *chi.Mux
 }
 
 type Server struct {
@@ -21,7 +20,7 @@ type Server struct {
 
 func (s *Server) Start() {
 	s.Logger.Info("starting server", "port", s.Port)
-	r := s.Handler()
+	r := s.handler(s.Logger)
 	s.Logger.Info("started server", "port", s.Port)
 	addr := ":" + s.Port
 	err := http.ListenAndServe(addr, r)
@@ -31,9 +30,9 @@ func (s *Server) Start() {
 	}
 }
 
-func (c *Server) Handler() *chi.Mux {
+func (c *Server) handler(logger logger.ILogger) *chi.Mux {
 	r := chi.NewRouter()
-	product := product.NewProductRouter()
+	product := product.NewProductRouter(logger)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
