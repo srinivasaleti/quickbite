@@ -1,9 +1,8 @@
 package product
 
 import (
-	"quickbite/server/internal/product/handler"
-
 	"github.com/go-chi/chi/v5"
+	"github.com/srinivasaleti/planner/server/internal/product/handler"
 )
 
 type ProductRouter struct {

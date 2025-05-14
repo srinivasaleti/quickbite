@@ -1,6 +1,6 @@
 package main
 
-import "quickbite/server/cmd"
+import "github.com/srinivasaleti/planner/server/cmd"
 
 func main() {
 	cmd.Execute()

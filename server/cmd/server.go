@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"quickbite/server/internal/server"
-
 	"github.com/spf13/cobra"
+	"github.com/srinivasaleti/planner/server/internal/server"
 )
 
 var port string

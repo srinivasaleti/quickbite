@@ -3,10 +3,10 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"quickbite/server/internal/product"
-	"quickbite/server/pkg/logger"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/srinivasaleti/planner/server/internal/product"
+	"github.com/srinivasaleti/planner/server/pkg/logger"
 )
 
 type IServer interface {

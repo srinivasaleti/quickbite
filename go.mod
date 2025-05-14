@@ -1,4 +1,4 @@
-module quickbite
+module github.com/srinivasaleti/planner
 
 go 1.23.0
 
