@@ -25,3 +25,10 @@ server-up: server-down ## Start the server on given port (default 8080)
 server-dev: ## Start the server on given port (default 8080) + support live reloading.
 	go mod tidy
 	./bin/air -c .air.toml
+
+go-test: ## Run go tests
+	go test ./... -race -coverprofile=coverage.out -covermode=atomic
+
+go-coverage: go-test ## Get overal coverage
+	@echo "Generating coverage report (file-level)..."
+	go tool cover -func=coverage.out | grep -E "total|^testing" | awk '{ print $$1, $$3 }'
