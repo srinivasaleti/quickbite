@@ -5,12 +5,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/srinivasaleti/planner/server/internal/config"
 	"github.com/srinivasaleti/planner/server/pkg/logger"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestServer_Start(t *testing.T) {
-	server, _ := NewServer("18081")
+	server, _ := NewServer("18081", config.ServerConfiguration{})
 
 	t.Run("should correctly handle routes", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "http://localhost:8081/health", nil)

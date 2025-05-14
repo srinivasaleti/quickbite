@@ -1,0 +1,38 @@
+package database
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+type PostgresDB struct {
+	Pool *pgxpool.Pool
+}
+
+// CreatePostgresDBPool creates a connection pool for postgres database.
+func (c *DatabaseConfig) CreatePostgresDBPool(ctx context.Context) (*PostgresDB, error) {
+	pgxConfig, err := pgxpool.ParseConfig(c.ConenctionString)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse connection string: %w", err)
+	}
+	dbMaxLifeTimeDuration, _ := time.ParseDuration(c.DBMaxConnectionLifeTime)
+	dbMaxConnIdleTimeDuration, _ := time.ParseDuration(c.DBMaxConnectionIdleTime)
+	pgxConfig.MaxConns = int32(c.DBMaxOpenConnections)
+	pgxConfig.MaxConnLifetime = dbMaxLifeTimeDuration
+	pgxConfig.MaxConnIdleTime = dbMaxConnIdleTimeDuration
+	pool, err := pgxpool.NewWithConfig(ctx, pgxConfig)
+	if err != nil {
+		c.Logger.Error(err, "unable to create pgxpool")
+		return nil, fmt.Errorf("failed to create connection pool: %w", err)
+	}
+
+	return &PostgresDB{Pool: pool}, nil
+}
+
+// PostgresDB should implment DB methods
+func (db *PostgresDB) Close() {
+	db.Pool.Close()
+}
