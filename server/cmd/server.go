@@ -12,7 +12,7 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Start the HTTP server",
 	Run: func(cmd *cobra.Command, args []string) {
-		server.Start(port)
+		server.NewServer(port)
 	},
 }
 
