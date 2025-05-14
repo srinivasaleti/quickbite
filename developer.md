@@ -23,6 +23,12 @@ Make sure you have these installed before starting:
 
 ## Start App in Development Mode
 
+When you work in local you might want to have a db running inside a docker. To start db
+
+```bash
+make compose-quickbitedb-up
+```
+
 To start both the server and the UI:
 
 ```bash

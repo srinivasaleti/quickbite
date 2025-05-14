@@ -1,0 +1,27 @@
+services:
+  quickbite-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "15435:5432"
+    networks:
+      - quickite-network
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    command: ["postgres", "-c", "ssl=off"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  db:
+    driver: local
+
+networks:
+  quickite-network:
+    driver: bridge
+    name: quickite-network
