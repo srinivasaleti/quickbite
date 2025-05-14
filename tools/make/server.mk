@@ -27,11 +27,11 @@ server-dev: ## Start the server on given port (default 8080) + support live relo
 	./bin/air -c .air.toml
 
 go-test: ## Run go tests
-	go test ./... -race -coverprofile=coverage.out -covermode=atomic
+	@go test ./... -race -coverprofile=coverage.out -covermode=atomic
 
 go-coverage: go-test ## Get overall coverage
 	@echo "Generating coverage report (file-level)..."
-	go tool cover -func=coverage.out \
+	@go tool cover -func=coverage.out \
 		| grep -v "mock" \
 		| grep -E "total|^testing" \
 		| awk '{ print $$1, $$3 }'
