@@ -7,6 +7,7 @@ import (
 )
 
 func Start(port string) {
+	fmt.Println("starting server on port: ", port)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Hello from Go server on port:", port)
 	})
