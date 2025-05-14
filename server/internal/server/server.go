@@ -3,7 +3,10 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"quickbite/server/internal/logger"
+	"quickbite/server/internal/product"
+	"quickbite/server/pkg/logger"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type IServer interface {
@@ -17,16 +20,29 @@ type Server struct {
 
 func (s *Server) Start() {
 	s.Logger.Info("starting server", "port", s.Port)
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Hello from Go server on port:", s.Port)
-	})
+	r := s.handler()
 	s.Logger.Info("started server", "port", s.Port)
 	addr := ":" + s.Port
-	err := http.ListenAndServe(addr, nil)
+	err := http.ListenAndServe(addr, r)
 	if err != nil {
 		s.Logger.Error(err, "unable to start server", "port", s.Port)
 		return
 	}
+}
+
+func (c *Server) handler() *chi.Mux {
+	r := chi.NewRouter()
+	product := product.NewProductRouter()
+
+	// all routes under /api
+	r.Route("/api", func(api chi.Router) {
+		product.AddRoutesToAppRouter(api)
+	})
+
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Not Found", http.StatusNotFound)
+	})
+	return r
 }
 
 func NewServer(port string) (*Server, error) {
