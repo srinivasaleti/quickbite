@@ -2,8 +2,8 @@ package product
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/srinivasaleti/planner/server/internal/product/handler"
-	"github.com/srinivasaleti/planner/server/pkg/logger"
+	"github.com/srinivasaleti/quickbite/server/internal/product/handler"
+	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 
 type ProductRouter struct {

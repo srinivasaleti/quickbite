@@ -5,7 +5,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/srinivasaleti/planner/server/internal/database"
+	"github.com/srinivasaleti/quickbite/server/internal/database"
 )
 
 // DBConfiguration defines the db configuration.

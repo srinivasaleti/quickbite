@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/srinivasaleti/planner/server/internal/config"
-	"github.com/srinivasaleti/planner/server/internal/database"
-	"github.com/srinivasaleti/planner/server/internal/product"
-	"github.com/srinivasaleti/planner/server/pkg/logger"
+	"github.com/srinivasaleti/quickbite/server/internal/config"
+	"github.com/srinivasaleti/quickbite/server/internal/database"
+	"github.com/srinivasaleti/quickbite/server/internal/product"
+	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 
 type IServer interface {

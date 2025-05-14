@@ -3,7 +3,7 @@ package database
 import (
 	"context"
 
-	"github.com/srinivasaleti/planner/server/pkg/logger"
+	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 
 const (

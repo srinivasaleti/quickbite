@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/srinivasaleti/planner/server/internal/config"
-	"github.com/srinivasaleti/planner/server/internal/server"
+	"github.com/srinivasaleti/quickbite/server/internal/config"
+	"github.com/srinivasaleti/quickbite/server/internal/server"
 	"github.com/stretchr/testify/assert"
 )
 

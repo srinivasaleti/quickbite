@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/srinivasaleti/planner/server/internal/database"
+	"github.com/srinivasaleti/quickbite/server/internal/database"
 	"github.com/stretchr/testify/assert"
 )
 

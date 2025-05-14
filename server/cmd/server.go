@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/srinivasaleti/planner/server/internal/config"
-	"github.com/srinivasaleti/planner/server/internal/server"
+	"github.com/srinivasaleti/quickbite/server/internal/config"
+	"github.com/srinivasaleti/quickbite/server/internal/server"
 )
 
 var port string

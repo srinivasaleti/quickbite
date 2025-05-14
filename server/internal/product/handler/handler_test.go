@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/srinivasaleti/planner/server/internal/product/db"
-	"github.com/srinivasaleti/planner/server/internal/product/model"
-	"github.com/srinivasaleti/planner/server/pkg/logger"
+	"github.com/srinivasaleti/quickbite/server/internal/product/db"
+	"github.com/srinivasaleti/quickbite/server/internal/product/model"
+	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 	"github.com/stretchr/testify/assert"
 )
 

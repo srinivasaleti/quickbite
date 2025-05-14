@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	productdb "github.com/srinivasaleti/planner/server/internal/product/db"
-	"github.com/srinivasaleti/planner/server/pkg/httputils"
-	"github.com/srinivasaleti/planner/server/pkg/logger"
+	productdb "github.com/srinivasaleti/quickbite/server/internal/product/db"
+	"github.com/srinivasaleti/quickbite/server/pkg/httputils"
+	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 
 type ProductHandler struct {
