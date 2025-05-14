@@ -27,3 +27,10 @@ func TestCreateDBPoolFromEnv(t *testing.T) {
 
 	dbPool.Close()
 }
+
+func TestNewDatabase(t *testing.T) {
+	db, err := SetupTestDatabase()
+	assert.NoError(t, err)
+	assert.NotNil(t, db)
+	db.TearDown()
+}
