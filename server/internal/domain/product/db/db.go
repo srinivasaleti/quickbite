@@ -57,7 +57,7 @@ func (db *ProductDB) GetProducts(filters GetProductFilters) ([]model.Product, er
 		err := rows.Scan(
 			&p.ID,
 			&p.Name,
-			&p.Price,
+			&p.PriceInCents,
 			&p.ImageURL,
 			&p.CategoryName,
 		)
@@ -65,6 +65,7 @@ func (db *ProductDB) GetProducts(filters GetProductFilters) ([]model.Product, er
 			return nil, err
 		}
 
+		p.Price = p.PriceInCents.ToPrice()
 		products = append(products, p)
 	}
 
@@ -135,7 +136,7 @@ func (db *ProductDB) InsertOrUpdateProducts(products []model.Product) ([]model.P
 		args := pgx.NamedArgs{
 			"name":        p.Name,
 			"external_id": p.ExternalID,
-			"price":       p.Price,
+			"price":       p.PriceInCents,
 			"image_url":   p.ImageURL,
 			"category_id": p.CategoryID,
 		}
@@ -178,7 +179,7 @@ func (db *ProductDB) GetProductById(id string) (*model.Product, error) {
 	err := db.DB.QueryRow(ctx, query, id).Scan(
 		&product.ID,
 		&product.Name,
-		&product.Price,
+		&product.PriceInCents,
 		&product.ImageURL,
 		&product.CategoryName,
 	)

@@ -7,7 +7,6 @@ import (
 	productdb "github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
 	"github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
-	"github.com/srinivasaleti/quickbite/server/pkg/price"
 	"gopkg.in/yaml.v2"
 )
 
@@ -76,7 +75,7 @@ func (seeder *ProductSeeder) seedProducts(categories []model.Category) ([]model.
 				products[i].CategoryID = &category.ID
 			}
 		}
-		products[i].Price = price.Price(products[i].Price.ToCent())
+		products[i].PriceInCents = products[i].Price.ToCents()
 	}
 	return seeder.ProductDB.InsertOrUpdateProducts(products)
 }

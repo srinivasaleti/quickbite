@@ -10,12 +10,13 @@ import (
 )
 
 type OrderItem struct {
-	ID        string      `json:"id"`
-	ProductID string      `json:"productId"`
-	Price     price.Price `json:"price"`
-	Quantity  int         `json:"quantity"`
-	CreatedAt *time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt *time.Time  `json:"updatedAt,omitempty"`
+	ID           string      `json:"id,omitempty"`
+	ProductID    string      `json:"productId"`
+	PriceInCents price.Cent  `json:"priceInCents,omitempty"`
+	Price        price.Price `json:"price,omitempty"`
+	Quantity     int         `json:"quantity"`
+	CreatedAt    *time.Time  `json:"createdAt,omitempty"`
+	UpdatedAt    *time.Time  `json:"updatedAt,omitempty"`
 }
 
 type Order struct {
@@ -47,4 +48,12 @@ func (p *CreateOrderPayload) Validate() error {
 	}
 
 	return nil
+}
+
+func (payload *CreateOrderPayload) GetProductIds() []string {
+	ids := []string{}
+	for _, item := range payload.OrderItems {
+		ids = append(ids, item.ProductID)
+	}
+	return ids
 }

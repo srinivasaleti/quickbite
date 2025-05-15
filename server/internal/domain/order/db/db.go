@@ -8,19 +8,25 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
 	ordermodel "github.com/srinivasaleti/quickbite/server/internal/domain/order/model"
+	"github.com/srinivasaleti/quickbite/server/pkg/price"
 )
 
 var ErrInvalidProductID = errors.New("invalid product id")
 
+type OrderPayload struct {
+	ordermodel.CreateOrderPayload
+	TotalPriceInCents price.Cent
+}
+
 type IOrderDB interface {
-	InsertOrder(createOrderPayload ordermodel.CreateOrderPayload) (*ordermodel.Order, error)
+	InsertOrder(createOrderPayload OrderPayload) (*ordermodel.Order, error)
 }
 
 type OrderDB struct {
 	DB database.DB
 }
 
-func (db *OrderDB) InsertOrder(payload ordermodel.CreateOrderPayload) (*ordermodel.Order, error) {
+func (db *OrderDB) InsertOrder(payload OrderPayload) (*ordermodel.Order, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -33,10 +39,10 @@ func (db *OrderDB) InsertOrder(payload ordermodel.CreateOrderPayload) (*ordermod
 	// create order
 	var orderID string
 	err = tx.QueryRow(ctx, `
-		INSERT INTO orders (coupon_code)
-		VALUES (@couponCode)
+		INSERT INTO orders (coupon_code, total_price)
+		VALUES (@couponCode, @totalPrice)
 		RETURNING id
-	`, pgx.NamedArgs{"couponCode": payload.CouponCode}).Scan(&orderID)
+	`, pgx.NamedArgs{"couponCode": payload.CouponCode, "totalPrice": payload.TotalPriceInCents}).Scan(&orderID)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +55,7 @@ func (db *OrderDB) InsertOrder(payload ordermodel.CreateOrderPayload) (*ordermod
 		`, pgx.NamedArgs{
 			"productId": item.ProductID,
 			"quantity":  item.Quantity,
-			"price":     item.Price,
+			"price":     item.PriceInCents,
 			"orderId":   orderID,
 		})
 		if database.ErrIsConstraint(err, "order_items_product_id_fkey") {

@@ -50,3 +50,13 @@ func TestCreateOrderPayloadValidate(t *testing.T) {
 		assert.Contains(t, err.Error(), "quantity must be greater than 0")
 	})
 }
+
+func TestGetProductIds(t *testing.T) {
+	payload := CreateOrderPayload{
+		OrderItems: []OrderItem{
+			{ProductID: "prod-1", Quantity: 0},
+			{ProductID: "prod-2", Quantity: 0},
+		},
+	}
+	assert.Equal(t, payload.GetProductIds(), []string{"prod-1", "prod-2"})
+}
