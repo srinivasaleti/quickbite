@@ -26,6 +26,7 @@ func (c *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 func NewProductHandler(logger logger.ILogger) ProductHandler {
 	return ProductHandler{
-		Logger: logger,
+		Logger:    logger,
+		ProductDB: productdb.NewProductDB(),
 	}
 }

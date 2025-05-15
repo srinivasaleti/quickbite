@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -79,6 +80,7 @@ func createTestContainerDatabase(ctx context.Context) (testcontainers.Container,
 		DBMaxOpenConnections:    10,
 		DBMaxConnectionLifeTime: "1m",
 		DBMaxConnectionIdleTime: "30m",
+		Logger:                  &logger.Logger{},
 	})
 	if err != nil {
 		return pgContainer, db, fmt.Errorf("failed to establish database connection: %v", err)

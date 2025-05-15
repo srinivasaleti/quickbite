@@ -25,7 +25,9 @@ func (s *Server) Start() {
 	s.Logger.Info("starting server", "port", s.Port)
 	// connecting to database
 	s.Logger.Info("configuring data store")
-	database, err := database.NewDatabase(s.Configuration.DBConfig())
+	dbConfig := s.Configuration.DBConfig()
+	dbConfig.Logger = s.Logger
+	database, err := database.NewDatabase(dbConfig)
 	if err != nil {
 		s.Logger.Error(err, "unable to connect to db")
 		return

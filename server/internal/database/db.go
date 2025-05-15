@@ -6,11 +6,6 @@ import (
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 
-const (
-	Local = "local"
-	AWS   = "aws"
-)
-
 type DB interface {
 	Close()
 }
@@ -36,6 +31,9 @@ func NewDatabase(cfg *DatabaseConfig) (DB, error) {
 	}
 	err = db.Pool.Ping(context.Background())
 	if err != nil {
+		return nil, err
+	}
+	if err := runDBMigrations(cfg); err != nil {
 		return nil, err
 	}
 	return db, err
