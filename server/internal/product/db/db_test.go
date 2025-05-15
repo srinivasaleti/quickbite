@@ -11,13 +11,13 @@ import (
 var productsData = []model.Product{
 	{
 		Name:       "Test Product 1",
-		ExternalID: "test-prod-001",
+		ExternalID: ToPtr("test-prod-001"),
 		Price:      10.5,
 		ImageURL:   "http://example.com/image1.jpg",
 	},
 	{
 		Name:       "Test Product 2",
-		ExternalID: "test-prod-002",
+		ExternalID: ToPtr("test-prod-002"),
 		Price:      15.0,
 		ImageURL:   "http://example.com/image2.jpg",
 	},
@@ -80,7 +80,6 @@ func TestProductDBOperations(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, len(products), len(productsData))
 		assert.Equal(t, products[0].Name, insertedProducts[0].Name)
-		assert.Equal(t, products[0].CategoryID, &insertCategories[0].ID)
 		assert.Equal(t, products[0].CategoryName, &insertCategories[0].Name)
 	})
 

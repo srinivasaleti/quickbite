@@ -32,8 +32,6 @@ func (db *ProductDB) GetProducts() ([]model.Product, error) {
 			p.name, 
 			p.price, 
 			p.image_url, 
-			p.external_id,
-			p.category_id,
 			c.name AS category_name
 		FROM products p
 		LEFT JOIN categories c ON p.category_id = c.id
@@ -54,8 +52,6 @@ func (db *ProductDB) GetProducts() ([]model.Product, error) {
 			&p.Name,
 			&p.Price,
 			&p.ImageURL,
-			&p.ExternalID,
-			&p.CategoryID,
 			&p.CategoryName,
 		)
 		if err != nil {

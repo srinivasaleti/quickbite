@@ -7,7 +7,7 @@ type Category struct {
 
 type Product struct {
 	ID           string  `json:"id" yaml:"id"`
-	ExternalID   string  `json:"externalID" yaml:"externalID"`
+	ExternalID   *string `json:"externalID,omitempty" yaml:"externalID"`
 	Name         string  `json:"name" yaml:"name"`
 	Price        float64 `json:"price" yaml:"price"`
 	ImageURL     string  `json:"imageUrl" yaml:"imageUrl"`
