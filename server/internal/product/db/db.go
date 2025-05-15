@@ -19,6 +19,48 @@ type ProductDB struct {
 }
 
 func (db *ProductDB) GetProducts() ([]model.Product, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), database.DefaultDBOperationTimeout)
+	defer cancel()
+
+	query := `
+		SELECT 
+			p.id, 
+			p.name, 
+			p.price, 
+			p.image_url, 
+			p.external_id,
+			p.category_id,
+			c.name AS category_name
+		FROM products p
+		LEFT JOIN categories c ON p.category_id = c.id
+	`
+
+	rows, err := db.DB.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var products []model.Product
+	for rows.Next() {
+		var p model.Product
+
+		err := rows.Scan(
+			&p.ID,
+			&p.Name,
+			&p.Price,
+			&p.ImageURL,
+			&p.ExternalID,
+			&p.CategoryID,
+			&p.CategoryName,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		products = append(products, p)
+	}
+
 	return products, nil
 }
 
@@ -112,12 +154,4 @@ func NewProductDB(db database.DB) IProductDB {
 	return &ProductDB{
 		DB: db,
 	}
-}
-
-var products = []model.Product{
-	{
-		ID:    "10",
-		Name:  "Chicken Waffle",
-		Price: 1,
-	},
 }

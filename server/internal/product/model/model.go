@@ -11,6 +11,6 @@ type Product struct {
 	Name         string  `json:"name" yaml:"name"`
 	Price        float64 `json:"price" yaml:"price"`
 	ImageURL     string  `json:"imageUrl" yaml:"imageUrl"`
-	CategoryName *string `json:"categoryName,omitempty" yaml:"categoryName,omitempty"`
+	CategoryName *string `json:"category,omitempty" yaml:"categoryName,omitempty"`
 	CategoryID   *string `json:"categoryId,omitempty" yaml:"categoryId,omitempty"`
 }

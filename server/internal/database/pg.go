@@ -45,3 +45,7 @@ func (db *PostgresDB) SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResu
 func (db *PostgresDB) QueryRow(ctx context.Context, sql string, arguments ...any) pgx.Row {
 	return db.Pool.QueryRow(ctx, sql, arguments...)
 }
+
+func (db *PostgresDB) Query(ctx context.Context, sql string, arguments ...any) (pgx.Rows, error) {
+	return db.Pool.Query(ctx, sql, arguments...)
+}

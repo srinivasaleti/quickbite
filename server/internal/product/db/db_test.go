@@ -28,51 +28,38 @@ var categoriesData = []model.Category{
 	{Name: "Brownie"},
 }
 
-func TestGetProducts(t *testing.T) {
-	t.Run("should get products", func(t *testing.T) {
-		db := ProductDB{}
-
-		products, err := db.GetProducts()
-
-		assert.NoError(t, err)
-		assert.Equal(t, products, products)
-	})
-}
-
 func TestProductDBOperations(t *testing.T) {
 	testContainer, err := database.SetupTestDatabase()
 	assert.NoError(t, err)
 	productDB := ProductDB{DB: testContainer.DB}
 
-	t.Run("insertOrUpdateCategories", func(t *testing.T) {
-		// should insert on first go
-		insertCategoreis, err := productDB.InsertOrUpdateCategories(categoriesData)
-		assert.NoError(t, err)
-		assert.Equal(t, len(insertCategoreis), len(categoriesData))
-		for _, c := range insertCategoreis {
-			assert.NotEmpty(t, c.ID)
-		}
+	// should insert categories on first go
+	insertCategories, err := productDB.InsertOrUpdateCategories(categoriesData)
+	assert.NoError(t, err)
+	assert.Equal(t, len(insertCategories), len(categoriesData))
+	for _, c := range insertCategories {
+		assert.NotEmpty(t, c.ID)
+	}
 
-		// should update on first go
+	// should insert products on first go
+	insertedProducts, err := productDB.InsertOrUpdateProducts(productsData)
+	assert.Equal(t, len(insertedProducts), len(productsData))
+	assert.NoError(t, err)
+	for _, p := range insertedProducts {
+		assert.NotEmpty(t, p.ID)
+	}
+
+	t.Run("insertOrUpdateCategories", func(t *testing.T) {
 		updatedCategories, err := productDB.InsertOrUpdateCategories(categoriesData)
 		assert.NoError(t, err)
 		assert.Equal(t, len(updatedCategories), len(categoriesData))
 		for index, c := range updatedCategories {
-			assert.Equal(t, c.ID, insertCategoreis[index].ID)
+			assert.Equal(t, c.ID, insertCategories[index].ID)
 		}
 
 	})
 
 	t.Run("insertOrUpdateProducts", func(t *testing.T) {
-		// should insert on first go
-		insertedProducts, err := productDB.InsertOrUpdateProducts(productsData)
-		assert.Equal(t, len(insertedProducts), len(productsData))
-		assert.NoError(t, err)
-		for _, p := range insertedProducts {
-			assert.NotEmpty(t, p.ID)
-		}
-
-		// should update on first go
 		updatedProducts, err := productDB.InsertOrUpdateProducts(productsData)
 		productsData[0].Price = 100
 		assert.Equal(t, len(updatedProducts), len(productsData))
@@ -82,4 +69,24 @@ func TestProductDBOperations(t *testing.T) {
 			assert.Equal(t, p.ID, insertedProducts[index].ID)
 		}
 	})
+
+	t.Run("get products", func(t *testing.T) {
+		// Add first product to a category
+		productsData[0].CategoryID = &insertCategories[0].ID
+		_, err := productDB.InsertOrUpdateProducts(productsData)
+		assert.NoError(t, err)
+
+		products, err := productDB.GetProducts()
+		assert.NoError(t, err)
+		assert.Equal(t, len(products), len(productsData))
+		assert.Equal(t, products[0].Name, insertedProducts[0].Name)
+		assert.Equal(t, products[0].CategoryID, &insertCategories[0].ID)
+		assert.Equal(t, products[0].CategoryName, &insertCategories[0].Name)
+	})
+
+	testContainer.TearDown()
+}
+
+func ToPtr[T any](v T) *T {
+	return &v
 }
