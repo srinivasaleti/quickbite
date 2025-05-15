@@ -1,0 +1,53 @@
+- name: "Waffle with Berries"
+  externalID: "waffle-berries"
+  price: 6.50
+  imageUrl: "https://images.unsplash.com/photo-1622970976780-c155a42ba86d?w=300&h=400"
+  categoryName: "Waffle"
+
+- name: "Vanilla Bean Crème Brulee"
+  externalID: "vanilla-creme-brulee"
+  price: 7.00
+  imageUrl: "https://images.unsplash.com/photo-1650419741906-1cdead9c9b4f?w=300&h=400"
+  categoryName: "Creme Brulee"
+
+- name: "Macaron Mix of Five"
+  externalID: "macaron-mix-five"
+  price: 8.00
+  imageUrl: "https://images.unsplash.com/photo-1612198790700-0ff08cb726e5?w=300&h=400"
+  categoryName: "Macaron"
+
+- name: "Classic Tiramisu"
+  externalID: "classic-tiramisu"
+  price: 5.50
+  imageUrl: "https://images.unsplash.com/photo-1639744211487-b27e3551b07c?w=300&h=400"
+  categoryName: "Tiramisu"
+
+- name: "Pistachio Baklava"
+  externalID: "pistachio-baklava"
+  price: 4.00
+  imageUrl: "https://images.unsplash.com/photo-1676014959543-81df1079b423?w=300&h=400"
+  categoryName: "Baklava"
+
+- name: "Lemon Meringue Pie"
+  externalID: "lemon-meringue-pie"
+  price: 5.00
+  imageUrl: "https://images.unsplash.com/photo-1595438280062-bab772735ecb?w=300&h=400"
+  categoryName: "Pie"
+
+- name: "Red Velvet Cake"
+  externalID: "red-velvet-cake"
+  price: 4.50
+  imageUrl: "https://plus.unsplash.com/premium_photo-1713920189815-876dbdf5f56e?w=300&h=400"
+  categoryName: "Cake"
+
+- name: "Salted Caramel Brownie"
+  externalID: "salted-caramel-brownie"
+  price: 5.50
+  imageUrl: "https://images.unsplash.com/photo-1736568220373-b7396c4e213e?w=300&h=400"
+  categoryName: "Brownie"
+
+- name: "Vanilla Panna Cotta"
+  externalID: "vanilla-panna-cotta"
+  price: 6.50
+  imageUrl: "https://images.unsplash.com/photo-1601654847092-712aff26313c?w=300&h=400"
+  categoryName: "Panna Cotta"

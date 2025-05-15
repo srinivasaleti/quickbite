@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -35,4 +36,12 @@ func (c *DatabaseConfig) CreatePostgresDBPool(ctx context.Context) (*PostgresDB,
 // PostgresDB should implment DB methods
 func (db *PostgresDB) Close() {
 	db.Pool.Close()
+}
+
+func (db *PostgresDB) SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResults {
+	return db.Pool.SendBatch(ctx, b)
+}
+
+func (db *PostgresDB) QueryRow(ctx context.Context, sql string, arguments ...any) pgx.Row {
+	return db.Pool.QueryRow(ctx, sql, arguments...)
 }

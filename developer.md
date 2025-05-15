@@ -57,3 +57,20 @@ This will:
 
 - Stop the Go server on given server port (default: 8080)
 - Stop the React UI on port 5173
+
+## Data Seeding for Categories and Products
+
+When the server starts, it runs the seeder which automatically adds or updates data in the database.
+
+### Where the Data Lives
+
+- Categories data is in: `server/internal/product/seeder/data/categories.yaml`  
+  - Here, **category name** is used as the key to match data between the database and YAML file.
+- Products data is in: `server/internal/product/seeder/data/products.yaml`  
+  - Here, **externalID** is used as the key to match data between the database and YAML file.
+
+Both files have the details of products and categories in simple YAML format.
+
+### Adding New Data
+
+Feel free to add new categories or products to these YAML files. When the server restarts, the seeder will update the database with your new data automatically.

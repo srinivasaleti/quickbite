@@ -15,17 +15,18 @@ import (
 
 var products = []model.Product{
 	{
-		ID:       "10",
-		Name:     "Chicken Waffle",
-		Price:    1,
-		Category: "Waffle",
+		ID:    "10",
+		Name:  "Chicken Waffle",
+		Price: 1,
 	},
 }
 
 var productDBMock = db.MockProductDB{}
 
 func getHandler() ProductHandler {
-	handler := NewProductHandler(&logger.Logger{})
+	handler := ProductHandler{
+		Logger: &logger.Logger{},
+	}
 	handler.ProductDB = &productDBMock
 	return handler
 }

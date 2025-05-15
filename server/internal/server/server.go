@@ -8,6 +8,7 @@ import (
 	"github.com/srinivasaleti/quickbite/server/internal/config"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
 	"github.com/srinivasaleti/quickbite/server/internal/product"
+	productsSeeder "github.com/srinivasaleti/quickbite/server/internal/product/seeder"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 
@@ -35,7 +36,8 @@ func (s *Server) Start() {
 	s.Logger.Info("successfully configured data store")
 	defer database.Close()
 
-	r := s.handler(s.Logger)
+	go s.seedData(database)
+	r := s.handler(database)
 	s.Logger.Info("started server", "port", s.Port)
 	addr := ":" + s.Port
 	err = http.ListenAndServe(addr, r)
@@ -45,9 +47,14 @@ func (s *Server) Start() {
 	}
 }
 
-func (c *Server) handler(logger logger.ILogger) *chi.Mux {
+func (s *Server) seedData(db database.DB) {
+	productSeeder := productsSeeder.NewProductSeeder(s.Logger, db)
+	productSeeder.SeedProducts()
+}
+
+func (s *Server) handler(db database.DB) *chi.Mux {
 	r := chi.NewRouter()
-	product := product.NewProductRouter(logger)
+	product := product.NewProductRouter(s.Logger, db)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

@@ -2,7 +2,7 @@
 cmd = "make server-up"
 bin = "tmp/main"
 full_bin = "false"
-include_ext = ["go", "html", "sql"]
+include_ext = ["go", "html", "sql", "yaml"]
 include_dir = ["server"]
 
 [log]
