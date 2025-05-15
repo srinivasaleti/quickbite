@@ -84,6 +84,30 @@ func TestProductDBOperations(t *testing.T) {
 		assert.Equal(t, products[0].CategoryName, &insertCategories[0].Name)
 	})
 
+	t.Run("get product by id", func(t *testing.T) {
+		// Add first product to a category
+		productsData[0].CategoryID = &insertCategories[0].ID
+		_, err := productDB.InsertOrUpdateProducts(productsData)
+		assert.NoError(t, err)
+
+		// get product by id
+		product, err := productDB.GetProductById(insertedProducts[0].ID)
+		assert.NoError(t, err)
+		assert.Equal(t, product.Name, insertedProducts[0].Name)
+		assert.Equal(t, product.CategoryName, &insertCategories[0].Name)
+
+		// product not found
+		product, err = productDB.GetProductById("2a7a8dc2-fdcd-4849-b64e-dde873b0de43")
+		assert.Equal(t, err, ErrNoProductFound)
+		assert.Nil(t, product)
+
+		// unknown error
+		product, err = productDB.GetProductById("invalid-id")
+		assert.NotEqual(t, err, ErrNoProductFound)
+		assert.Nil(t, product)
+		assert.Error(t, err)
+	})
+
 	testContainer.TearDown()
 }
 

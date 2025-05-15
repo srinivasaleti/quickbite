@@ -10,6 +10,7 @@ type Errorcode string
 
 const (
 	InternalServerError Errorcode = "INTERNAL_SERVER_ERROR"
+	NotFound            Errorcode = "NOT_FOUND"
 )
 
 // APIError defines the structure of an API error response.

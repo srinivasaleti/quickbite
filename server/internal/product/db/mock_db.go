@@ -27,6 +27,12 @@ func (m *MockProductDB) InsertOrUpdateProducts(products []model.Product) ([]mode
 	return result, args.Error(1)
 }
 
+func (m *MockProductDB) GetProductById(id string) (*model.Product, error) {
+	args := m.Mock.Called(id)
+	result, _ := args.Get(0).(model.Product)
+	return &result, args.Error(1)
+}
+
 func (m *MockProductDB) Reset() {
 	m.ExpectedCalls = nil
 }

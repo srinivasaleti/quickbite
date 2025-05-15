@@ -13,6 +13,7 @@ type ProductRouter struct {
 
 func (config *ProductRouter) AddRoutesToAppRouter(appRouter chi.Router) {
 	appRouter.Get("/product", config.Handler.GetProducts)
+	appRouter.Get("/product/{productId}", config.Handler.GetProduct)
 }
 
 func NewProductRouter(logger logger.ILogger, db database.DB) ProductRouter {

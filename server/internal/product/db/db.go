@@ -2,14 +2,18 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
 	"github.com/srinivasaleti/quickbite/server/internal/product/model"
 )
 
+var ErrNoProductFound = errors.New("product not found")
+
 type IProductDB interface {
 	GetProducts() ([]model.Product, error)
+	GetProductById(id string) (*model.Product, error)
 	InsertOrUpdateCategories(categories []model.Category) ([]model.Category, error)
 	InsertOrUpdateProducts(products []model.Product) ([]model.Product, error)
 }
@@ -148,6 +152,40 @@ func (db *ProductDB) InsertOrUpdateProducts(products []model.Product) ([]model.P
 	}
 
 	return products, nil
+}
+
+func (db *ProductDB) GetProductById(id string) (*model.Product, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), database.DefaultDBOperationTimeout)
+	defer cancel()
+
+	query := `
+		SELECT 
+			p.id, 
+			p.name, 
+			p.price, 
+			p.image_url, 
+			c.name AS category_name
+		FROM products p
+		LEFT JOIN categories c ON p.category_id = c.id
+		WHERE p.id = $1
+	`
+
+	var product model.Product
+
+	err := db.DB.QueryRow(ctx, query, id).Scan(
+		&product.ID,
+		&product.Name,
+		&product.Price,
+		&product.ImageURL,
+		&product.CategoryName,
+	)
+	if err == pgx.ErrNoRows {
+		return nil, ErrNoProductFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &product, nil
 }
 
 func NewProductDB(db database.DB) IProductDB {
