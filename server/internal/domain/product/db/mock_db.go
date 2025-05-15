@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/srinivasaleti/quickbite/server/internal/product/model"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
 	"github.com/stretchr/testify/mock"
 )
 

@@ -4,8 +4,8 @@ import (
 	"embed"
 
 	"github.com/srinivasaleti/quickbite/server/internal/database"
-	productdb "github.com/srinivasaleti/quickbite/server/internal/product/db"
-	"github.com/srinivasaleti/quickbite/server/internal/product/model"
+	productdb "github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 	"gopkg.in/yaml.v2"
 )

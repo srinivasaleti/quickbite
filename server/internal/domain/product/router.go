@@ -3,7 +3,7 @@ package product
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
-	"github.com/srinivasaleti/quickbite/server/internal/product/handler"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product/handler"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 

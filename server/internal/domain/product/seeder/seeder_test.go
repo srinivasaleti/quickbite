@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/srinivasaleti/quickbite/server/internal/database"
-	"github.com/srinivasaleti/quickbite/server/internal/product/model"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 	"github.com/stretchr/testify/assert"
 )

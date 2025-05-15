@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/config"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
-	"github.com/srinivasaleti/quickbite/server/internal/product"
-	productsSeeder "github.com/srinivasaleti/quickbite/server/internal/product/seeder"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product"
+	productsSeeder "github.com/srinivasaleti/quickbite/server/internal/domain/product/seeder"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )
 

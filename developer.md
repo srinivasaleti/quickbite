@@ -64,9 +64,9 @@ When the server starts, it runs the seeder which automatically adds or updates d
 
 ### Where the Data Lives
 
-- Categories data is in: `server/internal/product/seeder/data/categories.yaml`  
+- Categories data is in: `server/internal/domain/product/seeder/data/categories.yaml`  
   - Here, **category name** is used as the key to match data between the database and YAML file.
-- Products data is in: `server/internal/product/seeder/data/products.yaml`  
+- Products data is in: `server/internal/domain/product/seeder/data/products.yaml`  
   - Here, **externalID** is used as the key to match data between the database and YAML file.
 
 Both files have the details of products and categories in simple YAML format.

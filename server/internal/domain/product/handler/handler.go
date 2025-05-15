@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
-	productdb "github.com/srinivasaleti/quickbite/server/internal/product/db"
+	productdb "github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
 	"github.com/srinivasaleti/quickbite/server/pkg/httputils"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 )

@@ -6,7 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
-	"github.com/srinivasaleti/quickbite/server/internal/product/model"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
 )
 
 var ErrNoProductFound = errors.New("product not found")

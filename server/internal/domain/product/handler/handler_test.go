@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/srinivasaleti/quickbite/server/internal/product/db"
-	productdb "github.com/srinivasaleti/quickbite/server/internal/product/db"
-	"github.com/srinivasaleti/quickbite/server/internal/product/model"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
+	productdb "github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
 	"github.com/stretchr/testify/assert"
 )
