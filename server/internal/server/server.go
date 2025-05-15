@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/config"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
+	"github.com/srinivasaleti/quickbite/server/internal/domain/order"
 	"github.com/srinivasaleti/quickbite/server/internal/domain/product"
 	productsSeeder "github.com/srinivasaleti/quickbite/server/internal/domain/product/seeder"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
@@ -55,6 +56,7 @@ func (s *Server) seedData(db database.DB) {
 func (s *Server) handler(db database.DB) *chi.Mux {
 	r := chi.NewRouter()
 	product := product.NewProductRouter(s.Logger, db)
+	order := order.NewOrderRouter(s.Logger, db)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -64,6 +66,7 @@ func (s *Server) handler(db database.DB) *chi.Mux {
 	// all routes under /api
 	r.Route("/api", func(api chi.Router) {
 		product.AddRoutesToAppRouter(api)
+		order.AddRoutesToAppRouter(api)
 	})
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
