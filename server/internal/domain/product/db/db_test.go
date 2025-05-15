@@ -77,11 +77,17 @@ func TestProductDBOperations(t *testing.T) {
 		_, err := productDB.InsertOrUpdateProducts(productsData)
 		assert.NoError(t, err)
 
-		products, err := productDB.GetProducts()
+		products, err := productDB.GetProducts(GetProductFilters{})
 		assert.NoError(t, err)
 		assert.Equal(t, len(products), len(productsData))
 		assert.Equal(t, products[0].Name, insertedProducts[0].Name)
 		assert.Equal(t, products[0].CategoryName, &insertCategories[0].Name)
+
+		// Filter by ids
+		products, err = productDB.GetProducts(GetProductFilters{IDs: []string{insertedProducts[0].ID}})
+		assert.NoError(t, err)
+		assert.Equal(t, len(products), 1)
+		assert.Equal(t, products[0].ID, insertedProducts[0].ID)
 	})
 
 	t.Run("get product by id", func(t *testing.T) {

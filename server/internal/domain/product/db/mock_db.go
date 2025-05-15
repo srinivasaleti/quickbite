@@ -9,8 +9,8 @@ type MockProductDB struct {
 	mock.Mock
 }
 
-func (m *MockProductDB) GetProducts() ([]model.Product, error) {
-	args := m.Mock.Called()
+func (m *MockProductDB) GetProducts(filters GetProductFilters) ([]model.Product, error) {
+	args := m.Mock.Called(filters)
 	result, _ := args.Get(0).([]model.Product)
 	return result, args.Error(1)
 }

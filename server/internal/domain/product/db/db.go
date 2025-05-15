@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
@@ -12,7 +13,7 @@ import (
 var ErrNoProductFound = errors.New("product not found")
 
 type IProductDB interface {
-	GetProducts() ([]model.Product, error)
+	GetProducts(filters GetProductFilters) ([]model.Product, error)
 	GetProductById(id string) (*model.Product, error)
 	InsertOrUpdateCategories(categories []model.Category) ([]model.Category, error)
 	InsertOrUpdateProducts(products []model.Product) ([]model.Product, error)
@@ -22,11 +23,16 @@ type ProductDB struct {
 	DB database.DB
 }
 
-func (db *ProductDB) GetProducts() ([]model.Product, error) {
+type GetProductFilters struct {
+	IDs []string
+}
+
+func (db *ProductDB) GetProducts(filters GetProductFilters) ([]model.Product, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), database.DefaultDBOperationTimeout)
 	defer cancel()
+	where, args := constructGetProductsWhereQuery(filters)
 
-	query := `
+	query := fmt.Sprintf(`
 		SELECT 
 			p.id, 
 			p.name, 
@@ -35,9 +41,10 @@ func (db *ProductDB) GetProducts() ([]model.Product, error) {
 			c.name AS category_name
 		FROM products p
 		LEFT JOIN categories c ON p.category_id = c.id
-	`
+		%s
+	`, where)
 
-	rows, err := db.DB.Query(ctx, query)
+	rows, err := db.DB.Query(ctx, query, args)
 	if err != nil {
 		return nil, err
 	}

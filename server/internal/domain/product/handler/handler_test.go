@@ -41,7 +41,7 @@ func TestGetProducts(t *testing.T) {
 	t.Run("should get products", func(t *testing.T) {
 		reset()
 		productDBMock.
-			On("GetProducts").
+			On("GetProducts", productdb.GetProductFilters{}).
 			Return(products, nil)
 
 		rr := getProducts()
@@ -54,10 +54,10 @@ func TestGetProducts(t *testing.T) {
 
 	t.Run("should return erorr if unable to get products", func(t *testing.T) {
 		reset()
-
 		productDBMock.
-			On("GetProducts").
+			On("GetProducts", productdb.GetProductFilters{}).
 			Return(nil, errors.New("DB Error"))
+
 		rr := getProducts()
 
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)

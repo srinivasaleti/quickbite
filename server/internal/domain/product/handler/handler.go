@@ -17,7 +17,7 @@ type ProductHandler struct {
 
 func (c *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
 	c.Logger.Info("request recieved to fetch all products")
-	products, err := c.ProductDB.GetProducts()
+	products, err := c.ProductDB.GetProducts(productdb.GetProductFilters{})
 	if err != nil {
 		c.Logger.Error(err, "unable to get products")
 		httputils.WriteError(w, "unable to get products", httputils.InternalServerError)
