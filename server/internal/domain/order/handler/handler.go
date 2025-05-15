@@ -34,9 +34,15 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	order, err := h.OrderDB.InsertOrder(payload)
+	if err == orderdb.ErrInvalidProductID {
+		h.Logger.Error(err, "invalid product id")
+		httputils.WriteError(w, "invalid product id", httputils.BadRquest)
+		return
+	}
+
 	if err != nil {
 		h.Logger.Error(err, "failed to create order")
-		httputils.WriteError(w, "could not create order", httputils.InternalServerError)
+		httputils.WriteError(w, "unable to create order", httputils.InternalServerError)
 		return
 	}
 	h.Logger.Info("order created successfully", "orderId", order.ID)

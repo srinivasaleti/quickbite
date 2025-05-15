@@ -15,6 +15,7 @@ type DB interface {
 	SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResults
 	QueryRow(ctx context.Context, sql string, arguments ...any) pgx.Row
 	Query(ctx context.Context, sql string, arguments ...any) (pgx.Rows, error)
+	Begin(ctx context.Context) (pgx.Tx, error)
 }
 
 type DatabaseConfig struct {

@@ -2,10 +2,12 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -48,4 +50,16 @@ func (db *PostgresDB) QueryRow(ctx context.Context, sql string, arguments ...any
 
 func (db *PostgresDB) Query(ctx context.Context, sql string, arguments ...any) (pgx.Rows, error) {
 	return db.Pool.Query(ctx, sql, arguments...)
+}
+
+func (db *PostgresDB) Begin(ctx context.Context) (pgx.Tx, error) {
+	return db.Pool.Begin(ctx)
+}
+
+func ErrIsConstraint(err error, constraintName string) bool {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		return pgErr.ConstraintName == constraintName
+	}
+	return false
 }

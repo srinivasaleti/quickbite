@@ -6,14 +6,16 @@ import (
 	"time"
 
 	productModel "github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
+	"github.com/srinivasaleti/quickbite/server/pkg/price"
 )
 
 type OrderItem struct {
-	ID        string     `json:"id"`
-	ProductID string     `json:"productId"`
-	Quantity  int        `json:"quantity"`
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
-	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	ID        string      `json:"id"`
+	ProductID string      `json:"productId"`
+	Price     price.Price `json:"price"`
+	Quantity  int         `json:"quantity"`
+	CreatedAt *time.Time  `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time  `json:"updatedAt,omitempty"`
 }
 
 type Order struct {
