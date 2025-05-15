@@ -20,20 +20,20 @@ type APIError struct {
 }
 
 // WriteError sends an error response to the client.
-func WriteError(w http.ResponseWriter, message string, code Errorcode, status int) {
+func WriteError(w http.ResponseWriter, message string, code Errorcode) {
 	er := APIError{
 		Code:    code,
 		Message: message,
 	}
 
-	WriteJSONResponse(w, er, status)
+	WriteJSONResponse(w, er, getStatusFromCode(code))
 }
 
 // WriteJSONResponse sends a successful JSON response.
 func WriteJSONResponse(w http.ResponseWriter, data interface{}, statusCode int) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
-		WriteError(w, "Unable to encode the data", InternalServerError, http.StatusInternalServerError)
+		WriteError(w, "Unable to encode the data", InternalServerError)
 		return
 	}
 
@@ -44,4 +44,15 @@ func WriteJSONResponse(w http.ResponseWriter, data interface{}, statusCode int) 
 	if err != nil {
 		fmt.Fprintf(w, "Failed to write JSON response")
 	}
+}
+
+func getStatusFromCode(code Errorcode) int {
+	statusMap := map[Errorcode]int{
+		NotFound:            http.StatusNotFound,
+		InternalServerError: http.StatusInternalServerError,
+	}
+	if status, ok := statusMap[code]; ok {
+		return status
+	}
+	return http.StatusInternalServerError
 }

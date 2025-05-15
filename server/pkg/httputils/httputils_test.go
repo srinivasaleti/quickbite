@@ -39,9 +39,9 @@ func TestWriteError(t *testing.T) {
 	t.Run("error response with custom message", func(t *testing.T) {
 		recorder := httptest.NewRecorder()
 
-		WriteError(recorder, "Custom error occurred", InternalServerError, http.StatusBadRequest)
+		WriteError(recorder, "Custom error occurred", InternalServerError)
 
-		assert.Equal(t, http.StatusBadRequest, recorder.Code)
+		assert.Equal(t, http.StatusInternalServerError, recorder.Code)
 		assert.Equal(t, "application/json", recorder.Header().Get("Content-Type"))
 		assert.JSONEq(t, `{"code":"INTERNAL_SERVER_ERROR","message":"Custom error occurred"}`, recorder.Body.String())
 	})

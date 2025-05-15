@@ -20,7 +20,7 @@ func (c *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
 	products, err := c.ProductDB.GetProducts()
 	if err != nil {
 		c.Logger.Error(err, "unable to get products")
-		httputils.WriteError(w, "unable to get products", httputils.InternalServerError, http.StatusInternalServerError)
+		httputils.WriteError(w, "unable to get products", httputils.InternalServerError)
 		return
 	}
 	c.Logger.Info("successfully recieved all products")
@@ -33,12 +33,12 @@ func (c *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 	product, err := c.ProductDB.GetProductById(productId)
 	if err == productdb.ErrNoProductFound {
 		c.Logger.Error(err, "product not found", "productId", productId)
-		httputils.WriteError(w, "product not found", httputils.NotFound, http.StatusNotFound)
+		httputils.WriteError(w, "product not found", httputils.NotFound)
 		return
 	}
 	if err != nil {
 		c.Logger.Error(err, "unable to get product by id", "productId", productId)
-		httputils.WriteError(w, "unable to get product by id", httputils.NotFound, http.StatusInternalServerError)
+		httputils.WriteError(w, "unable to get product by id", httputils.InternalServerError)
 		return
 	}
 	c.Logger.Info("successfully recieved product by id", "productId", productId)
