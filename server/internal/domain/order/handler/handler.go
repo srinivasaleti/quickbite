@@ -51,8 +51,18 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	updateOrderItemPrices(payload, products)
 
+	totalPrice, err := getTotalPrice(payload)
+	if err != nil {
+		h.Logger.Error(err, "invalid product id")
+		httputils.WriteError(w, "invalid product id", "INVALID_COUPON")
+		return
+	}
+	orderPayload := orderdb.OrderPayload{}
+	orderPayload.CreateOrderPayload = payload
+	orderPayload.TotalPriceInCents = totalPrice
+
 	// Create order
-	order, err := h.OrderDB.InsertOrder(createDbOrderPayload(payload))
+	order, err := h.OrderDB.InsertOrder(orderPayload)
 	if err == orderdb.ErrInvalidProductID {
 		h.Logger.Error(err, "invalid product id")
 		httputils.WriteError(w, "invalid product id", httputils.BadRquest)
@@ -78,16 +88,6 @@ func updateOrderItemPrices(payload ordermodel.CreateOrderPayload, products []pro
 			}
 		}
 	}
-}
-
-func createDbOrderPayload(payload ordermodel.CreateOrderPayload) orderdb.OrderPayload {
-	orderPayload := orderdb.OrderPayload{}
-	orderPayload.CreateOrderPayload = payload
-	orderPayload.TotalPriceInCents = 0
-	for _, item := range payload.OrderItems {
-		orderPayload.TotalPriceInCents = orderPayload.TotalPriceInCents + item.PriceInCents.Multiply(item.Quantity)
-	}
-	return orderPayload
 }
 
 func NewOrderHanlder(logger logger.ILogger, db database.DB) OrderHandler {

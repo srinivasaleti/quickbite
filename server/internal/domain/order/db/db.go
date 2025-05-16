@@ -71,9 +71,10 @@ func (db *OrderDB) InsertOrder(payload OrderPayload) (*ordermodel.Order, error) 
 	}
 
 	return &ordermodel.Order{
-		ID:         orderID,
-		CouponCode: payload.CouponCode,
-		OrderItems: payload.OrderItems,
+		ID:                orderID,
+		CouponCode:        payload.CouponCode,
+		OrderItems:        payload.OrderItems,
+		TotalPriceInCents: &payload.TotalPriceInCents,
 	}, nil
 }
 
