@@ -17,7 +17,7 @@ func TestGetTotalPrice(t *testing.T) {
 	}
 
 	t.Run("No coupon", func(t *testing.T) {
-		order := ordermodel.CreateOrderPayload{
+		order := ordermodel.Order{
 			OrderItems: items,
 			CouponCode: nil,
 		}
@@ -28,7 +28,7 @@ func TestGetTotalPrice(t *testing.T) {
 
 	t.Run("No discount if coupon not valid", func(t *testing.T) {
 		coupon := "HAPPYHRS"
-		order := ordermodel.CreateOrderPayload{
+		order := ordermodel.Order{
 			OrderItems: items,
 			CouponCode: &coupon,
 		}
@@ -39,7 +39,7 @@ func TestGetTotalPrice(t *testing.T) {
 
 	t.Run("HAPPYHOURS coupon - 18% discount", func(t *testing.T) {
 		coupon := "HAPPYHOURS"
-		order := ordermodel.CreateOrderPayload{
+		order := ordermodel.Order{
 			OrderItems: items,
 			CouponCode: &coupon,
 		}
@@ -52,7 +52,7 @@ func TestGetTotalPrice(t *testing.T) {
 
 	t.Run("BUYGETONE coupon - lowest priced item free", func(t *testing.T) {
 		coupon := "BUYGETONE"
-		order := ordermodel.CreateOrderPayload{
+		order := ordermodel.Order{
 			OrderItems: items,
 			CouponCode: &coupon,
 		}
@@ -65,7 +65,7 @@ func TestGetTotalPrice(t *testing.T) {
 
 	t.Run("BUYGETONE coupon with less than 2 items should error", func(t *testing.T) {
 		coupon := "BUYGETONE"
-		order := ordermodel.CreateOrderPayload{
+		order := ordermodel.Order{
 			OrderItems: []model.OrderItem{
 				{ProductID: "p1", PriceInCents: price.Cent(650), Quantity: 1},
 			},
@@ -79,7 +79,7 @@ func TestGetTotalPrice(t *testing.T) {
 
 	t.Run("123456 coupon - 10% discount", func(t *testing.T) {
 		coupon := "123456"
-		order := ordermodel.CreateOrderPayload{
+		order := ordermodel.Order{
 			OrderItems: items,
 			CouponCode: &coupon,
 		}

@@ -89,30 +89,29 @@ func (h *OrderHandler) prepareOrderSummary(r *http.Request, w http.ResponseWrite
 	err = h.validateCouponCode(payload.CouponCode)
 	if err == couponService.ErrCouponsNotLoaded {
 		h.Logger.Error(err, "coupons not loaded yet")
-		httputils.WriteError(w, "Coupons not loaded yet, plese try after some time", httputils.InvalidOrder)
+		httputils.WriteError(w, "Coupons are not loaded yet. Plese try after some time or remove coupon", httputils.InvalidOrder)
 		return nil, err
 	}
 	if err != nil {
 		h.Logger.Error(err, "invalid coupon code")
-		httputils.WriteError(w, "Invalid coupon code", httputils.InvalidOrder)
+		httputils.WriteError(w, "Invalid coupon code. Either submit a valid coupon code or remove coupon code", httputils.InvalidOrder)
 		return nil, errors.New("invalid coupon code")
 	}
 
-	// calculate price
-	totalPrice, err := getTotalPrice(payload, true)
+	// prepare order
+	orderPayload := ordermodel.Order{
+		OrderItems: payload.OrderItems,
+		CouponCode: payload.CouponCode,
+		Products:   products,
+	}
+	totalPrice, err := getTotalPrice(orderPayload, true)
 	if err != nil {
 		h.Logger.Error(err, "invalid order")
 		httputils.WriteError(w, err.Error(), httputils.InvalidOrder)
 		return nil, err
 	}
+	orderPayload.TotalPriceInCents = totalPrice
 
-	// prepare order
-	orderPayload := ordermodel.Order{
-		OrderItems:        payload.OrderItems,
-		CouponCode:        payload.CouponCode,
-		TotalPriceInCents: totalPrice,
-		Products:          products,
-	}
 	return &orderPayload, nil
 }
 

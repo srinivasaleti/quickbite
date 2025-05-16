@@ -256,7 +256,3 @@ func orderSummaryRequest(payload interface{}) *httptest.ResponseRecorder {
 	router.ServeHTTP(rr, req)
 	return rr
 }
-
-func ToPtr[T any](v T) *T {
-	return &v
-}

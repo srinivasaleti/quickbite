@@ -8,7 +8,11 @@ import (
 	"github.com/srinivasaleti/quickbite/server/pkg/price"
 )
 
-func getTotalPrice(order ordermodel.CreateOrderPayload, isValidCoupon bool) (price.Cent, error) {
+func ToPtr[T any](v T) *T {
+	return &v
+}
+
+func getTotalPrice(order ordermodel.Order, isValidCoupon bool) (price.Cent, error) {
 	total := totalPriceInCents(order)
 	if order.CouponCode == nil || !isValidCoupon {
 		return total, nil
@@ -33,7 +37,7 @@ func getTotalPrice(order ordermodel.CreateOrderPayload, isValidCoupon bool) (pri
 	}
 }
 
-func totalPriceInCents(payload ordermodel.CreateOrderPayload) price.Cent {
+func totalPriceInCents(payload ordermodel.Order) price.Cent {
 	total := price.Cent(0)
 	for _, item := range payload.OrderItems {
 		total = total.Add(item.PriceInCents.Multiply(item.Quantity))
