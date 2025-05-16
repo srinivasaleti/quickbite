@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/srinivasaleti/quickbite/server/internal/database"
@@ -22,47 +23,12 @@ type OrderHandler struct {
 func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("request received to create new order")
 
-	var payload ordermodel.CreateOrderPayload
-
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		h.Logger.Error(err, "failed to decode order payload")
-		httputils.WriteError(w, "invalid request body", httputils.BadRquest)
-		return
-	}
-
-	if err := payload.Validate(); err != nil {
-		h.Logger.Error(err, "order payload validation failed")
-		httputils.WriteError(w, err.Error(), httputils.BadRquest)
-		return
-	}
-
-	// Fetch products and update the order item prices
-	productsIds := payload.GetProductIds()
-	products, err := h.ProductDB.GetProducts(productdb.GetProductFilters{IDs: productsIds})
+	orderPayload, err := h.preapreOrderPayload(r, w)
 	if err != nil {
-		h.Logger.Error(err, "unable to get products")
-		httputils.WriteError(w, "unable to get products", httputils.InternalServerError)
 		return
 	}
-	if len(products) != len(productsIds) {
-		h.Logger.Error(err, "invalid product ids")
-		httputils.WriteError(w, "invalid product ids", httputils.BadRquest)
-		return
-	}
-	updateOrderItemPrices(payload, products)
-
-	totalPrice, err := getTotalPrice(payload)
-	if err != nil {
-		h.Logger.Error(err, "invalid product id")
-		httputils.WriteError(w, "invalid product id", "INVALID_COUPON")
-		return
-	}
-	orderPayload := orderdb.OrderPayload{}
-	orderPayload.CreateOrderPayload = payload
-	orderPayload.TotalPriceInCents = totalPrice
-
 	// Create order
-	order, err := h.OrderDB.InsertOrder(orderPayload)
+	order, err := h.OrderDB.InsertOrder(*orderPayload)
 	if err == orderdb.ErrInvalidProductID {
 		h.Logger.Error(err, "invalid product id")
 		httputils.WriteError(w, "invalid product id", httputils.BadRquest)
@@ -75,9 +41,50 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	h.Logger.Info("order created successfully", "orderId", order.ID)
 
-	order.Products = products
-
 	httputils.WriteJSONResponse(w, order, http.StatusCreated)
+}
+
+func (h *OrderHandler) preapreOrderPayload(r *http.Request, w http.ResponseWriter) (*ordermodel.Order, error) {
+	var payload ordermodel.CreateOrderPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		h.Logger.Error(err, "failed to decode order payload")
+		httputils.WriteError(w, "invalid request body", httputils.BadRquest)
+		return nil, err
+	}
+
+	if err := payload.Validate(); err != nil {
+		h.Logger.Error(err, "order payload validation failed")
+		httputils.WriteError(w, err.Error(), httputils.BadRquest)
+		return nil, err
+	}
+
+	productsIds := payload.GetProductIds()
+	products, err := h.ProductDB.GetProducts(productdb.GetProductFilters{IDs: productsIds})
+	if err != nil {
+		h.Logger.Error(err, "unable to get products")
+		httputils.WriteError(w, "unable to get products", httputils.InternalServerError)
+		return nil, err
+	}
+	if len(products) != len(productsIds) {
+		h.Logger.Error(err, "invalid product ids")
+		httputils.WriteError(w, "invalid product ids", httputils.BadRquest)
+		return nil, errors.New("invalid product ids")
+	}
+	updateOrderItemPrices(payload, products)
+
+	totalPrice, err := getTotalPrice(payload)
+	if err != nil {
+		h.Logger.Error(err, "invalid product id")
+		httputils.WriteError(w, "invalid product id", "INVALID_COUPON")
+		return nil, err
+	}
+	orderPayload := ordermodel.Order{
+		OrderItems:        payload.OrderItems,
+		CouponCode:        payload.CouponCode,
+		TotalPriceInCents: totalPrice,
+		Products:          products,
+	}
+	return &orderPayload, nil
 }
 
 func updateOrderItemPrices(payload ordermodel.CreateOrderPayload, products []productmodel.Product) {

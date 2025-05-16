@@ -8,25 +8,19 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
 	ordermodel "github.com/srinivasaleti/quickbite/server/internal/domain/order/model"
-	"github.com/srinivasaleti/quickbite/server/pkg/price"
 )
 
 var ErrInvalidProductID = errors.New("invalid product id")
 
-type OrderPayload struct {
-	ordermodel.CreateOrderPayload
-	TotalPriceInCents price.Cent
-}
-
 type IOrderDB interface {
-	InsertOrder(createOrderPayload OrderPayload) (*ordermodel.Order, error)
+	InsertOrder(order ordermodel.Order) (*ordermodel.Order, error)
 }
 
 type OrderDB struct {
 	DB database.DB
 }
 
-func (db *OrderDB) InsertOrder(payload OrderPayload) (*ordermodel.Order, error) {
+func (db *OrderDB) InsertOrder(order ordermodel.Order) (*ordermodel.Order, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -42,13 +36,13 @@ func (db *OrderDB) InsertOrder(payload OrderPayload) (*ordermodel.Order, error) 
 		INSERT INTO orders (coupon_code, total_price)
 		VALUES (@couponCode, @totalPrice)
 		RETURNING id
-	`, pgx.NamedArgs{"couponCode": payload.CouponCode, "totalPrice": payload.TotalPriceInCents}).Scan(&orderID)
+	`, pgx.NamedArgs{"couponCode": order.CouponCode, "totalPrice": order.TotalPriceInCents}).Scan(&orderID)
 	if err != nil {
 		return nil, err
 	}
 
 	// create order items
-	for _, item := range payload.OrderItems {
+	for _, item := range order.OrderItems {
 		_, err := tx.Exec(ctx, `
 			INSERT INTO order_items (order_id, product_id, quantity, price)
 			VALUES (@orderId, @productId, @quantity, @price)
@@ -70,12 +64,8 @@ func (db *OrderDB) InsertOrder(payload OrderPayload) (*ordermodel.Order, error) 
 		return nil, err
 	}
 
-	return &ordermodel.Order{
-		ID:                orderID,
-		CouponCode:        payload.CouponCode,
-		OrderItems:        payload.OrderItems,
-		TotalPriceInCents: &payload.TotalPriceInCents,
-	}, nil
+	order.ID = orderID
+	return &order, nil
 }
 
 func NewOrderDB(db database.DB) IOrderDB {

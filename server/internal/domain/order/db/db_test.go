@@ -7,6 +7,7 @@ import (
 	ordermodel "github.com/srinivasaleti/quickbite/server/internal/domain/order/model"
 	productdb "github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
 	productmodel "github.com/srinivasaleti/quickbite/server/internal/domain/product/model"
+	"github.com/srinivasaleti/quickbite/server/pkg/price"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,13 +26,11 @@ func TestInsertOrder(t *testing.T) {
 	insertedProducts, err := productdb.InsertOrUpdateProducts(products)
 	assert.NoError(t, err)
 
-	var orderPayload = OrderPayload{
-		TotalPriceInCents: 5000,
-		CreateOrderPayload: ordermodel.CreateOrderPayload{
-			OrderItems: []ordermodel.OrderItem{
-				{ProductID: insertedProducts[0].ID, PriceInCents: 1000, Quantity: 3},
-				{ProductID: insertedProducts[1].ID, PriceInCents: 2000, Quantity: 1},
-			},
+	var orderPayload = ordermodel.Order{
+		TotalPriceInCents: price.Cent(5000),
+		OrderItems: []ordermodel.OrderItem{
+			{ProductID: insertedProducts[0].ID, PriceInCents: 1000, Quantity: 3},
+			{ProductID: insertedProducts[1].ID, PriceInCents: 2000, Quantity: 1},
 		},
 	}
 	order, err := orderDb.InsertOrder(orderPayload)
@@ -39,8 +38,8 @@ func TestInsertOrder(t *testing.T) {
 	assert.NotNil(t, order)
 	assert.NotNil(t, order.OrderItems[0].ID)
 	assert.NotNil(t, order.OrderItems[1].ID)
-	assert.Equal(t, order.OrderItems, orderPayload.CreateOrderPayload.OrderItems)
-	assert.Equal(t, order.CouponCode, orderPayload.CreateOrderPayload.CouponCode)
+	assert.Equal(t, order.OrderItems, orderPayload.OrderItems)
+	assert.Equal(t, order.CouponCode, orderPayload.CouponCode)
 }
 
 func ToPtr[T any](v T) *T {

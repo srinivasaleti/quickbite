@@ -21,7 +21,7 @@ type OrderItem struct {
 
 type Order struct {
 	ID                string                 `json:"id"`
-	TotalPriceInCents *price.Cent            `json:"totalPriceInCents,omitempty"`
+	TotalPriceInCents price.Cent             `json:"totalPriceInCents,omitempty"`
 	CouponCode        *string                `json:"couponCode,omitempty"`
 	CreatedAt         *time.Time             `json:"createdAt,omitempty"`
 	UpdatedAt         *time.Time             `json:"updatedAt,omitempty"`

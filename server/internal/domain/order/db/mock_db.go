@@ -9,7 +9,7 @@ type MockOrderDB struct {
 	mock.Mock
 }
 
-func (m *MockOrderDB) InsertOrder(createOrderPayload OrderPayload) (*ordermodel.Order, error) {
+func (m *MockOrderDB) InsertOrder(createOrderPayload ordermodel.Order) (*ordermodel.Order, error) {
 	args := m.Mock.Called(createOrderPayload)
 	result, _ := args.Get(0).(ordermodel.Order)
 	return &result, args.Error(1)

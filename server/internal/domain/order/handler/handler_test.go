@@ -31,25 +31,14 @@ var products = []productmodel.Product{
 	{ID: "prod-2", Price: price.Price(20)},
 }
 
-var validOrderPayloadWithPrices = ordermodel.CreateOrderPayload{
-	CouponCode: nil,
+var order = ordermodel.Order{
+	CouponCode:        nil,
+	TotalPriceInCents: 12000,
 	OrderItems: []ordermodel.OrderItem{
 		{ProductID: "prod-1", Quantity: 2, PriceInCents: products[0].Price.ToCents()},
-		{ProductID: "prod-2", Quantity: 5, PriceInCents: products[1].Price.ToCents()}},
-}
-
-var orderPayload = orderdb.OrderPayload{
-	CreateOrderPayload: validOrderPayloadWithPrices,
-	TotalPriceInCents:  12000,
-}
-
-var returnedOrder = ordermodel.Order{
-	ID:         "order-123",
-	CouponCode: nil,
-	OrderItems: []ordermodel.OrderItem{
-		{ID: "item-1", ProductID: "prod-1", Quantity: 2, PriceInCents: products[0].Price.ToCents()},
-		{ID: "item-1", ProductID: "prod-2", Quantity: 2, PriceInCents: products[1].Price.ToCents()},
+		{ProductID: "prod-2", Quantity: 5, PriceInCents: products[1].Price.ToCents()},
 	},
+	Products: products,
 }
 
 func getHandler() OrderHandler {
@@ -118,7 +107,7 @@ func TestCreateOrder(t *testing.T) {
 				validOrderPayload.OrderItems[1].ProductID,
 			}}).Return(products, nil)
 		orderDBMock.
-			On("InsertOrder", orderPayload).
+			On("InsertOrder", order).
 			Return(ordermodel.Order{}, errors.New("DB error"))
 
 		rr := createOrderRequest(validOrderPayload)
@@ -136,8 +125,8 @@ func TestCreateOrder(t *testing.T) {
 				validOrderPayload.OrderItems[1].ProductID,
 			}}).Return(products, nil)
 		orderDBMock.
-			On("InsertOrder", orderPayload).
-			Return(returnedOrder, nil)
+			On("InsertOrder", order).
+			Return(order, nil)
 
 		rr := createOrderRequest(validOrderPayload)
 
@@ -147,11 +136,10 @@ func TestCreateOrder(t *testing.T) {
 
 		var actualOrder ordermodel.Order
 		_ = json.Unmarshal(rr.Body.Bytes(), &actualOrder)
-		returnedOrder.Products = products
-		assert.Equal(t, returnedOrder, actualOrder)
+		assert.Equal(t, order, actualOrder)
 		// Prices should be converted to main price
-		assert.Equal(t, returnedOrder.Products[0].Price, price.Price(10))
-		assert.Equal(t, returnedOrder.OrderItems[0].PriceInCents, price.Cent(1000))
+		assert.Equal(t, order.Products[0].Price, price.Price(10))
+		assert.Equal(t, order.OrderItems[0].PriceInCents, price.Cent(1000))
 	})
 }
 
