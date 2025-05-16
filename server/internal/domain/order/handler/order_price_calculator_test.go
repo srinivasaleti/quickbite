@@ -21,18 +21,29 @@ func TestGetTotalPrice(t *testing.T) {
 			OrderItems: items,
 			CouponCode: nil,
 		}
-		total, err := getTotalPrice(order)
+		total, err := getTotalPrice(order, true)
 		assert.NoError(t, err)
 		assert.Equal(t, price.Cent(10050), total)
 	})
 
-	t.Run("HAPPYHRS coupon - 18% discount", func(t *testing.T) {
+	t.Run("No discount if coupon not valid", func(t *testing.T) {
 		coupon := "HAPPYHRS"
 		order := ordermodel.CreateOrderPayload{
 			OrderItems: items,
 			CouponCode: &coupon,
 		}
-		total, err := getTotalPrice(order)
+		total, err := getTotalPrice(order, false)
+		assert.NoError(t, err)
+		assert.Equal(t, price.Cent(10050), total)
+	})
+
+	t.Run("HAPPYHOURS coupon - 18% discount", func(t *testing.T) {
+		coupon := "HAPPYHOURS"
+		order := ordermodel.CreateOrderPayload{
+			OrderItems: items,
+			CouponCode: &coupon,
+		}
+		total, err := getTotalPrice(order, true)
 		assert.NoError(t, err)
 		expectedDiscount := price.Cent(10050).Percentize(18)
 		expectedTotal := price.Cent(10050).Subtract(expectedDiscount)
@@ -45,7 +56,7 @@ func TestGetTotalPrice(t *testing.T) {
 			OrderItems: items,
 			CouponCode: &coupon,
 		}
-		total, err := getTotalPrice(order)
+		total, err := getTotalPrice(order, true)
 		assert.NoError(t, err)
 		lowest := findLowestUnitPrice(items)
 		expectedTotal := price.Cent(10050).Subtract(lowest)
@@ -60,20 +71,20 @@ func TestGetTotalPrice(t *testing.T) {
 			},
 			CouponCode: &coupon,
 		}
-		total, err := getTotalPrice(order)
+		total, err := getTotalPrice(order, true)
 		assert.Error(t, err)
 		assert.EqualError(t, err, "add atleast 2 items to apply the coupon")
 		assert.Equal(t, price.Cent(650), total)
 	})
 
-	t.Run("Unknown coupon - no discount", func(t *testing.T) {
-		coupon := "UNKNOWN"
+	t.Run("123456 coupon - 10% discount", func(t *testing.T) {
+		coupon := "123456"
 		order := ordermodel.CreateOrderPayload{
 			OrderItems: items,
 			CouponCode: &coupon,
 		}
-		total, err := getTotalPrice(order)
+		total, err := getTotalPrice(order, true)
 		assert.NoError(t, err)
-		assert.Equal(t, price.Cent(10050), total)
+		assert.Equal(t, price.Cent(9045), total)
 	})
 }

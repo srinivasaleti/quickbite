@@ -12,6 +12,7 @@ const (
 	InternalServerError Errorcode = "INTERNAL_SERVER_ERROR"
 	NotFound            Errorcode = "NOT_FOUND"
 	BadRquest           Errorcode = "BAD_REQUEST"
+	InvalidOrder        Errorcode = "INVALID_ORDER"
 )
 
 // APIError defines the structure of an API error response.
@@ -52,6 +53,7 @@ func getStatusFromCode(code Errorcode) int {
 		NotFound:            http.StatusNotFound,
 		InternalServerError: http.StatusInternalServerError,
 		BadRquest:           http.StatusBadRequest,
+		InvalidOrder:        http.StatusUnprocessableEntity,
 	}
 	if status, ok := statusMap[code]; ok {
 		return status

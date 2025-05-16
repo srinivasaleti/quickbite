@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/go-chi/chi/v5"
+	couponservice "github.com/srinivasaleti/quickbite/server/internal/domain/coupon/service"
 	orderdb "github.com/srinivasaleti/quickbite/server/internal/domain/order/db"
 	ordermodel "github.com/srinivasaleti/quickbite/server/internal/domain/order/model"
 	productdb "github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
@@ -20,7 +21,7 @@ import (
 
 var orderDBMock = orderdb.MockOrderDB{}
 var productDBMock = productdb.MockProductDB{}
-
+var couponServiceMock = couponservice.MockCouponService{}
 var validOrderPayload = ordermodel.CreateOrderPayload{
 	CouponCode: nil,
 	OrderItems: []ordermodel.OrderItem{{ProductID: "prod-1", Quantity: 2}, {ProductID: "prod-2", Quantity: 5}},
@@ -32,7 +33,6 @@ var products = []productmodel.Product{
 }
 
 var order = ordermodel.Order{
-	CouponCode:        nil,
 	TotalPriceInCents: 12000,
 	OrderItems: []ordermodel.OrderItem{
 		{ProductID: "prod-1", Quantity: 2, PriceInCents: products[0].Price.ToCents()},
@@ -43,10 +43,11 @@ var order = ordermodel.Order{
 
 func getHandler() OrderHandler {
 	handler := OrderHandler{
-		Logger: &logger.Logger{},
+		Logger:        &logger.Logger{},
+		OrderDB:       &orderDBMock,
+		ProductDB:     &productDBMock,
+		CouponService: &couponServiceMock,
 	}
-	handler.OrderDB = &orderDBMock
-	handler.ProductDB = &productDBMock
 	return handler
 }
 
@@ -124,6 +125,39 @@ func TestCreateOrder(t *testing.T) {
 				validOrderPayload.OrderItems[0].ProductID,
 				validOrderPayload.OrderItems[1].ProductID,
 			}}).Return(products, nil)
+		orderDBMock.
+			On("InsertOrder", order).
+			Return(order, nil)
+
+		rr := createOrderRequest(validOrderPayload)
+
+		orderDBMock.AssertExpectations(t)
+		productDBMock.AssertExpectations(t)
+		assert.Equal(t, rr.Code, http.StatusCreated)
+
+		var actualOrder ordermodel.Order
+		_ = json.Unmarshal(rr.Body.Bytes(), &actualOrder)
+		assert.Equal(t, order, actualOrder)
+		// Prices should be converted to main price
+		assert.Equal(t, order.Products[0].Price, price.Price(10))
+		assert.Equal(t, order.OrderItems[0].PriceInCents, price.Cent(1000))
+	})
+
+	t.Run("should validate coupon if exits", func(t *testing.T) {
+		reset()
+		productDBMock.
+			On("GetProducts", productdb.GetProductFilters{IDs: []string{
+				validOrderPayload.OrderItems[0].ProductID,
+				validOrderPayload.OrderItems[1].ProductID,
+			}}).Return(products, nil)
+		couponServiceMock.
+			On("ValidateCoupon", "Coupon1").
+			Return(nil)
+
+		// Apply coupon code
+		validOrderPayload.CouponCode = ToPtr("Coupon1")
+		order.TotalPriceInCents = order.TotalPriceInCents - order.TotalPriceInCents.Percentize(10)
+		order.CouponCode = ToPtr("Coupon1")
 		orderDBMock.
 			On("InsertOrder", order).
 			Return(order, nil)
@@ -221,4 +255,8 @@ func orderSummaryRequest(payload interface{}) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
 	router.ServeHTTP(rr, req)
 	return rr
+}
+
+func ToPtr[T any](v T) *T {
+	return &v
 }

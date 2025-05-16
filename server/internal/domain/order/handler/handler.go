@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/srinivasaleti/quickbite/server/internal/database"
+	couponService "github.com/srinivasaleti/quickbite/server/internal/domain/coupon/service"
 	orderdb "github.com/srinivasaleti/quickbite/server/internal/domain/order/db"
 	ordermodel "github.com/srinivasaleti/quickbite/server/internal/domain/order/model"
 	productdb "github.com/srinivasaleti/quickbite/server/internal/domain/product/db"
@@ -15,9 +16,10 @@ import (
 )
 
 type OrderHandler struct {
-	Logger    logger.ILogger
-	OrderDB   orderdb.IOrderDB
-	ProductDB productdb.IProductDB
+	Logger        logger.ILogger
+	OrderDB       orderdb.IOrderDB
+	ProductDB     productdb.IProductDB
+	CouponService couponService.ICouponService
 }
 
 func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +57,7 @@ func (h *OrderHandler) CalculateOrderSummary(w http.ResponseWriter, r *http.Requ
 
 func (h *OrderHandler) prepareOrderSummary(r *http.Request, w http.ResponseWriter) (*ordermodel.Order, error) {
 	var payload ordermodel.CreateOrderPayload
+	// validate request
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		h.Logger.Error(err, "failed to decode order payload")
 		httputils.WriteError(w, "invalid request body", httputils.BadRquest)
@@ -67,6 +70,7 @@ func (h *OrderHandler) prepareOrderSummary(r *http.Request, w http.ResponseWrite
 		return nil, err
 	}
 
+	// update order prices
 	productsIds := payload.GetProductIds()
 	products, err := h.ProductDB.GetProducts(productdb.GetProductFilters{IDs: productsIds})
 	if err != nil {
@@ -81,12 +85,28 @@ func (h *OrderHandler) prepareOrderSummary(r *http.Request, w http.ResponseWrite
 	}
 	updateOrderItemPrices(payload, products)
 
-	totalPrice, err := getTotalPrice(payload)
-	if err != nil {
-		h.Logger.Error(err, "invalid product id")
-		httputils.WriteError(w, "invalid product id", "INVALID_COUPON")
+	// validate coupons
+	err = h.validateCouponCode(payload.CouponCode)
+	if err == couponService.ErrCouponsNotLoaded {
+		h.Logger.Error(err, "coupons not loaded yet")
+		httputils.WriteError(w, "Coupons not loaded yet, plese try after some time", httputils.InvalidOrder)
 		return nil, err
 	}
+	if err != nil {
+		h.Logger.Error(err, "invalid coupon code")
+		httputils.WriteError(w, "Invalid coupon code", httputils.InvalidOrder)
+		return nil, errors.New("invalid coupon code")
+	}
+
+	// calculate price
+	totalPrice, err := getTotalPrice(payload, true)
+	if err != nil {
+		h.Logger.Error(err, "invalid order")
+		httputils.WriteError(w, err.Error(), httputils.InvalidOrder)
+		return nil, err
+	}
+
+	// prepare order
 	orderPayload := ordermodel.Order{
 		OrderItems:        payload.OrderItems,
 		CouponCode:        payload.CouponCode,
@@ -94,6 +114,19 @@ func (h *OrderHandler) prepareOrderSummary(r *http.Request, w http.ResponseWrite
 		Products:          products,
 	}
 	return &orderPayload, nil
+}
+
+func (h *OrderHandler) validateCouponCode(coupon *string) error {
+	if coupon == nil {
+		return nil
+	}
+	// HAPPYHOURS, BUYGETONE are not valid coupon codes. They are not present in any one of the coupon file.
+	// However https://github.com/oolio-group/kart-challenge says HAPPYHOURS, BUYGETONE as a valid coupons.
+	// So explicity adding these two as valid coupons.
+	if *coupon == "HAPPYHOURS" || *coupon == "BUYGETONE" {
+		return nil
+	}
+	return h.CouponService.ValidateCoupon(*coupon)
 }
 
 func updateOrderItemPrices(payload ordermodel.CreateOrderPayload, products []productmodel.Product) {
@@ -108,8 +141,9 @@ func updateOrderItemPrices(payload ordermodel.CreateOrderPayload, products []pro
 
 func NewOrderHanlder(logger logger.ILogger, db database.DB) OrderHandler {
 	return OrderHandler{
-		Logger:    logger,
-		OrderDB:   orderdb.NewOrderDB(db),
-		ProductDB: productdb.NewProductDB(db),
+		Logger:        logger,
+		OrderDB:       orderdb.NewOrderDB(db),
+		ProductDB:     productdb.NewProductDB(db),
+		CouponService: couponService.NewCouponService(logger),
 	}
 }
