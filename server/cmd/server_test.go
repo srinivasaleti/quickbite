@@ -18,7 +18,7 @@ func TestCommands(t *testing.T) {
 	})
 
 	t.Run("should start server", func(t *testing.T) {
-		t.Setenv("QUICKBITE_CONNECTION_STRING", `postgres://postgres:postgres@server:15435/postgres?sslmode=disable`)
+		t.Setenv("QUICKBITE_DB_CONNECTION_STRING", `postgres://postgres:postgres@server:15435/postgres?sslmode=disable`)
 		var mockServer = server.MockServer{}
 		mockServer.On("Start")
 		createServerFunc = func(p string, configuration config.ServerConfiguration) (server.IServer, error) {
@@ -49,7 +49,7 @@ func TestCommands(t *testing.T) {
 	})
 
 	t.Run("should not start server when config not loaded properly", func(t *testing.T) {
-		os.Unsetenv("QUICKBITE_CONNECTION_STRING")
+		os.Unsetenv("QUICKBITE_DB_CONNECTION_STRING")
 		var mockServer = server.MockServer{}
 		createServerFunc = func(p string, configuration config.ServerConfiguration) (server.IServer, error) {
 			return nil, fmt.Errorf("server creation failed")

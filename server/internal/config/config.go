@@ -17,7 +17,7 @@ const (
 // DBConfiguration defines the db configuration.
 type DBConfiguration struct {
 	// ConnectionString represents database connection string.
-	ConnectionString string `required:"true" envconfig:"QUICKBITE_CONNECTION_STRING"`
+	ConnectionString string `required:"true" envconfig:"QUICKBITE_DB_CONNECTION_STRING"`
 	// MaxConnections is the maximum size of the pool.
 	MaxConnections int `required:"false" envconfig:"QUICKBITE_DB_MAX_CONNECTIONS" default:"30"`
 	// ConnectionLifeTime is the duration since creation after which a connection will be automatically closed.
