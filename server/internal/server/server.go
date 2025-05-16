@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/srinivasaleti/quickbite/server/internal/config"
 	"github.com/srinivasaleti/quickbite/server/internal/database"
 	"github.com/srinivasaleti/quickbite/server/internal/domain/order"
@@ -57,6 +58,10 @@ func (s *Server) handler(db database.DB) *chi.Mux {
 	r := chi.NewRouter()
 	product := product.NewProductRouter(s.Logger, db)
 	order := order.NewOrderRouter(s.Logger, db)
+
+	if s.Configuration.Environment == config.LOCAL {
+		r.Use(cors.AllowAll().Handler)
+	}
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

@@ -8,6 +8,12 @@ import (
 	"github.com/srinivasaleti/quickbite/server/internal/database"
 )
 
+type Environment string
+
+const (
+	LOCAL Environment = "LOCAL"
+)
+
 // DBConfiguration defines the db configuration.
 type DBConfiguration struct {
 	// ConnectionString represents database connection string.
@@ -18,13 +24,13 @@ type DBConfiguration struct {
 	ConnectionLifeTime string `required:"false" envconfig:"QUICKBITE_DB_MAX_CONNECTIONS_LIFE_TIME" default:"30m"`
 	// MaxConnectionIdleTime is the duration after which an idle connection will be automatically closed by the health check.
 	MaxConnectionIdleTime string `required:"false" envconfig:"QUICKBITE_DB_MAX_CONNECTIONS_IDLE_TIME" default:"1m"`
-	// DBSSLMode is represents postgres ssl mode.
-	DBSSLMode string `required:"false" envconfig:"QUICKBITE_DB_SSL_MODE" default:"require"`
 }
 
 // ServerConfiguration defines the server configuration.
 type ServerConfiguration struct {
 	DBConfiguration
+	// DBSSLMode is represents postgres ssl mode.
+	Environment Environment `required:"false" envconfig:"ENVIRONMENT" default:"LOCAL"`
 }
 
 func (s *ServerConfiguration) DBConfig() *database.DatabaseConfig {
