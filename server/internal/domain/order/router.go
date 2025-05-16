@@ -13,6 +13,7 @@ type OrderRouter struct {
 
 func (config *OrderRouter) AddRoutesToAppRouter(appRouter chi.Router) {
 	appRouter.Post("/order", config.Handler.CreateOrder)
+	appRouter.Post("/order/summary", config.Handler.CalculateOrderSummary)
 }
 
 func NewOrderRouter(logger logger.ILogger, db database.DB) OrderRouter {

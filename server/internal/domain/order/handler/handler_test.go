@@ -166,6 +166,37 @@ func TestUpdateOrderItemPrices(t *testing.T) {
 	})
 }
 
+func TestCalculateOrderSummary(t *testing.T) {
+	t.Run("should return bad request if unable decode body", func(t *testing.T) {
+		reset()
+		rr := orderSummaryRequest("invalid body")
+		assert.Equal(t, http.StatusBadRequest, rr.Code)
+	})
+
+	t.Run("should create and return order", func(t *testing.T) {
+		reset()
+		productDBMock.
+			On("GetProducts", productdb.GetProductFilters{IDs: []string{
+				validOrderPayload.OrderItems[0].ProductID,
+				validOrderPayload.OrderItems[1].ProductID,
+			}}).Return(products, nil)
+
+		rr := orderSummaryRequest(validOrderPayload)
+
+		orderDBMock.AssertExpectations(t)
+		productDBMock.AssertExpectations(t)
+		assert.Equal(t, rr.Code, http.StatusCreated)
+
+		var actualOrder ordermodel.Order
+		_ = json.Unmarshal(rr.Body.Bytes(), &actualOrder)
+		assert.Equal(t, order, actualOrder)
+		// Prices should be converted to main price
+		assert.Equal(t, order.Products[0].Price, price.Price(10))
+		assert.Equal(t, order.OrderItems[0].PriceInCents, price.Cent(1000))
+		orderDBMock.AssertNotCalled(t, "InsertOrder")
+	})
+}
+
 func createOrderRequest(payload interface{}) *httptest.ResponseRecorder {
 	handler := getHandler()
 	router := chi.NewRouter()
@@ -173,6 +204,19 @@ func createOrderRequest(payload interface{}) *httptest.ResponseRecorder {
 
 	body, _ := json.Marshal(payload)
 	req, _ := http.NewRequest("POST", "/api/order", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	return rr
+}
+
+func orderSummaryRequest(payload interface{}) *httptest.ResponseRecorder {
+	handler := getHandler()
+	router := chi.NewRouter()
+	router.Post("/api/order/summary", handler.CalculateOrderSummary)
+
+	body, _ := json.Marshal(payload)
+	req, _ := http.NewRequest("POST", "/api/order/summary", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	router.ServeHTTP(rr, req)

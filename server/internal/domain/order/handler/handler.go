@@ -23,7 +23,7 @@ type OrderHandler struct {
 func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("request received to create new order")
 
-	orderPayload, err := h.preapreOrderPayload(r, w)
+	orderPayload, err := h.prepareOrderSummary(r, w)
 	if err != nil {
 		return
 	}
@@ -44,7 +44,16 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	httputils.WriteJSONResponse(w, order, http.StatusCreated)
 }
 
-func (h *OrderHandler) preapreOrderPayload(r *http.Request, w http.ResponseWriter) (*ordermodel.Order, error) {
+func (h *OrderHandler) CalculateOrderSummary(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("request received to create new order")
+	orderPayload, err := h.prepareOrderSummary(r, w)
+	if err != nil {
+		return
+	}
+	httputils.WriteJSONResponse(w, orderPayload, http.StatusCreated)
+}
+
+func (h *OrderHandler) prepareOrderSummary(r *http.Request, w http.ResponseWriter) (*ordermodel.Order, error) {
 	var payload ordermodel.CreateOrderPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		h.Logger.Error(err, "failed to decode order payload")
