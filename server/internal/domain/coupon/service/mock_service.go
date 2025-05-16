@@ -6,7 +6,7 @@ type MockCouponService struct {
 	mock.Mock
 }
 
-func (m *MockCouponService) IsValidCoupon(coupon string) error {
+func (m *MockCouponService) ValidateCoupon(coupon string) error {
 	args := m.Called(coupon)
 	return args.Error(0)
 }

@@ -31,7 +31,7 @@ func TestCreateOrder(t *testing.T) {
 	t.Run("should return 404 if code is invalid", func(t *testing.T) {
 		reset()
 		coupon := "123"
-		couponServiceMock.On("IsValidCoupon", coupon).Return(couponservice.ErrInvalidCouponCode)
+		couponServiceMock.On("ValidateCoupon", coupon).Return(couponservice.ErrInvalidCouponCode)
 		rr := createValidateCouponRequest(coupon)
 		assert.Equal(t, rr.Code, http.StatusBadRequest)
 	})
@@ -39,7 +39,7 @@ func TestCreateOrder(t *testing.T) {
 	t.Run("should return 500 if unable to verify", func(t *testing.T) {
 		reset()
 		coupon := "123"
-		couponServiceMock.On("IsValidCoupon", coupon).Return(errors.New("something goes wrong"))
+		couponServiceMock.On("ValidateCoupon", coupon).Return(errors.New("something goes wrong"))
 		rr := createValidateCouponRequest(coupon)
 		assert.Equal(t, rr.Code, http.StatusInternalServerError)
 	})
@@ -47,7 +47,7 @@ func TestCreateOrder(t *testing.T) {
 	t.Run("should return 200 on validating code", func(t *testing.T) {
 		reset()
 		coupon := "123"
-		couponServiceMock.On("IsValidCoupon", coupon).Return(nil)
+		couponServiceMock.On("ValidateCoupon", coupon).Return(nil)
 		rr := createValidateCouponRequest(coupon)
 		assert.Equal(t, rr.Code, http.StatusOK)
 	})
