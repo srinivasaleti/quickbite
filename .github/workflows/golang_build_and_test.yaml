@@ -18,3 +18,5 @@ jobs:
           cache-dependency-path: go.sum
       - name: Run Coverage Tests
         run: make go-coverage
+      - name: Build
+        run: make go-build

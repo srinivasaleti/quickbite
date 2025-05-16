@@ -2,9 +2,9 @@
 
 SERVER_PORT = 8080
 
-.PHONE: install-air
 install-air:
 	@if [ ! -f ./bin/air ]; then \
+		echo "installing air-verse package"; \
 		curl -sSfL https://raw.githubusercontent.com/air-verse/air/master/install.sh | sh -s; \
 	else \
 		echo "./bin/air already exists"; \
@@ -35,3 +35,19 @@ go-coverage: go-test ## Get overall coverage
 		| grep -v "mock" \
 		| grep -E "total|^testing" \
 		| awk '{ print $$1, $$3 }'
+
+
+
+BINARY_NAME := quickbite
+OUTPUT_DIR := ./bin
+PLATFORMS := linux/amd64 linux/arm64 darwin/amd64 darwin/arm64
+
+server-build: ## Build Go binaries for linux and darwin platforms (amd64 and arm64)
+	@mkdir -p $(OUTPUT_DIR)
+	@for platform in $(PLATFORMS); do \
+		OS=$$(echo $$platform | cut -d'/' -f1); \
+		ARCH=$$(echo $$platform | cut -d'/' -f2); \
+		echo "Building for $$OS/$$ARCH..."; \
+		mkdir -p $(OUTPUT_DIR)/$$OS/$$ARCH; \
+		GOOS=$$OS GOARCH=$$ARCH go build -o $(OUTPUT_DIR)/$$OS/$$ARCH/$(BINARY_NAME) ./server; \
+	done
