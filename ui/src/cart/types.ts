@@ -18,7 +18,7 @@ export type OrderSummaryRequest = {
 };
 
 export type OrderSummaryResponse = {
-  id: string;
+  id?: string;
   totalPriceInCents: number;
   couponCode?: string;
   items: {

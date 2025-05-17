@@ -29,6 +29,19 @@ const ModalContainer = styled.div`
   padding: 20px;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
   overflow-y: auto;
+
+  @media (min-width: 768px) {
+    top: 50%;
+    left: 50%;
+    bottom: auto;
+    right: auto;
+    height: auto;
+    max-height: 80vh;
+    width: auto;
+    min-width: 500px;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+  }
 `;
 
 const CloseIcon = styled.span`

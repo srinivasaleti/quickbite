@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import type { CartItems } from "./types";
+import type { CartItems, OrderSummaryResponse } from "./types";
 import type { ProductType } from "../product/types/product";
 
 type CartContextType = {
@@ -11,6 +11,9 @@ type CartContextType = {
   getTotalItems: () => number;
   getTotal: () => number;
   clearCart: () => void;
+  order?: OrderSummaryResponse;
+  cartOrderSummary?: OrderSummaryResponse;
+  setOrder: (order: OrderSummaryResponse | undefined) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -19,8 +22,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [cart, setCart] = useState<CartItems>({});
+  const [order, setOrder] = useState<OrderSummaryResponse | undefined>();
 
   const addToCart = (product: ProductType) => {
+    setOrder(undefined);
     setCart((prev) => {
       if (prev[product.id]) {
         return {
@@ -42,6 +47,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const removeFromCart = (productId: string) => {
+    setOrder(undefined);
     setCart((prev) => {
       if (!prev[productId]) return prev;
 
@@ -64,6 +70,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const removeCompleteProduct = (productId: string) => {
+    setOrder(undefined);
     setCart((prev) => {
       const newCart = { ...prev };
       delete newCart[productId];
@@ -75,13 +82,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     return cart?.[productId]?.quantity || 0;
   };
 
-  const getTotal = (): number => {
+  const getTotalPriceInCents = (): number => {
     const total = Object.keys(cart).reduce(
       (prev, curr) =>
         prev + cart[curr].product.priceInCents * cart[curr].quantity,
       0
     );
-    return total / 100;
+    return total;
   };
 
   const getTotalItems = (): number => {
@@ -93,6 +100,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const clearCart = () => setCart({});
 
+  const cartOrderSummary: OrderSummaryResponse = {
+    totalPriceInCents: getTotalPriceInCents(),
+    products: Object.keys(cart).map((productID) => {
+      return cart[productID].product;
+    }),
+    items: Object.keys(cart).map((productID) => {
+      return {
+        productId: productID,
+        priceInCents: cart[productID].product.priceInCents,
+        quantity: cart[productID].quantity,
+      };
+    }),
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -102,8 +123,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         removeCompleteProduct,
         getQuantity,
         getTotalItems,
-        getTotal,
+        getTotal: getTotalPriceInCents,
         clearCart,
+        setOrder,
+        order,
+        cartOrderSummary,
       }}
     >
       {children}

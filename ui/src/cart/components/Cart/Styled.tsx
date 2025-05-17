@@ -72,7 +72,6 @@ export const OrderSummaryQuantity = styled(Text)`
 `;
 
 export const PriceInfo = styled(Text)`
-  color: ${({ theme }) => theme.colors.grey["500"]};
   font-weight: ${({ theme }) => theme.fontWeights.semiBold};
   margin-right: 6px;
 `;

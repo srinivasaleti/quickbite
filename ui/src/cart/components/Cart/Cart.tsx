@@ -5,13 +5,12 @@ import { useBreakpoint } from "../../../common/hooks/useBreakpoints";
 import { useCart } from "../../CartContext";
 import { EmptyCart } from "./EmptyCart";
 import { OrderSumary } from "./OrderSummary";
-import Modal from "../../../common/components/Modal";
 
 export const Cart = () => {
   const { fontWeights, colors } = useTheme();
   const breakpoint = useBreakpoint();
   const showFullWithContainer = breakpoint != "l" && breakpoint !== "xl";
-  const { getTotalItems } = useCart();
+  const { getTotalItems, cartOrderSummary } = useCart();
 
   const totalItems = getTotalItems();
 
@@ -20,10 +19,11 @@ export const Cart = () => {
       <Text size="24px" weight={fontWeights.semiBold} color={colors.coral[500]}>
         Your Cart ({totalItems})
       </Text>
-      {totalItems === 0 ? <EmptyCart /> : <OrderSumary />}
-      <Modal>
-        <OrderSumary />
-      </Modal>
+      {totalItems === 0 ? (
+        <EmptyCart />
+      ) : (
+        <OrderSumary orderSummary={cartOrderSummary} />
+      )}
     </CartContainer>
   );
 };

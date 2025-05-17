@@ -8,10 +8,13 @@ import {
 } from "./Styled";
 import { CartIcon } from "../../common/components/CartIcon";
 import Modal, { useModal } from "../../common/components/Modal";
+import { useCart } from "../../cart/CartContext";
+import { OrderSumary } from "../../cart/components/Cart/OrderSummary";
 
 export const Home = () => {
   const breakpoint = useBreakpoint();
   const { openModal } = useModal();
+  const { getTotalItems, order } = useCart();
 
   return (
     <>
@@ -27,7 +30,11 @@ export const Home = () => {
           <CartIcon onClick={openModal} />
         )}
         <Modal>
-          <Cart />
+          {getTotalItems() !== 0 ? (
+            <Cart />
+          ) : (
+            <OrderSumary orderSummary={order} isOrderPlaced={true} />
+          )}
         </Modal>
       </HomeContainer>
     </>
