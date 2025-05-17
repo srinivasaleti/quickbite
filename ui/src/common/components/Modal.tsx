@@ -43,7 +43,6 @@ const CloseIcon = styled.span`
 export default function Modal({ children }: { children: ReactNode }) {
   const { isOpen, closeModal } = useModal();
 
-  console.log(isOpen);
   if (!isOpen) return null;
 
   return (
