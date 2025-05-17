@@ -3,7 +3,7 @@ export const theme = {
     body: "'Red Hat Text', sans-serif",
   },
   fontSizes: {
-    productName: "16px",
+    body: "16px",
   },
   margins: {
     sm: "8px",
