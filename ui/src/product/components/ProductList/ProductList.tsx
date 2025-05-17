@@ -1,8 +1,9 @@
 import React from "react";
-import { Grid } from "./Styled";
+import { Grid, Icon, NoProductsContainer } from "./Styled";
 import { Product } from "../Product/Product";
 import { useProducts } from "../../hooks";
 import { Loader } from "../../../common/components/Loader";
+import { Text } from "../../../common";
 
 export const ProductList: React.FC = () => {
   const { loading, products } = useProducts();
@@ -12,6 +13,15 @@ export const ProductList: React.FC = () => {
       <div style={{ height: "100vh" }}>
         <Loader />
       </div>
+    );
+  }
+
+  if (!products || !products.length) {
+    return (
+      <NoProductsContainer>
+        <Icon>🍰</Icon>
+        <Text> No products available</Text>
+      </NoProductsContainer>
     );
   }
 

@@ -14,12 +14,11 @@ const Spinner = styled.div`
   animation: ${spin} 1s linear infinite;
 `;
 
-// Container to center the loader
 const LoaderContainer = styled.div`
   display: flex;
-  justify-content: center; /* center horizontally */
-  align-items: center; /* center vertically */
-  height: 100%; /* full height of parent */
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `;
 
 export const Loader = () => {
