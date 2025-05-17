@@ -65,7 +65,7 @@ func (db *ProductDB) GetProducts(filters GetProductFilters) ([]model.Product, er
 			return nil, err
 		}
 
-		p.Price = p.PriceInCents.ToPrice()
+		p.Price = p.PriceInCents.ToDollar()
 		products = append(products, p)
 	}
 

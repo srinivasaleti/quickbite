@@ -1,16 +1,16 @@
 package price
 
-type Price float64
+type Dollar float64
 type Cent int
 
 const Magitude = 100
 
-func (p Price) ToCents() Cent {
-	return Cent(p * Magitude)
+func (doller Dollar) ToCents() Cent {
+	return Cent(doller * Magitude)
 }
 
-func (c Cent) ToPrice() Price {
-	return Price(float64(c) / Magitude)
+func (c Cent) ToDollar() Dollar {
+	return Dollar(float64(c) / Magitude)
 }
 
 func (c Cent) Multiply(quantity int) Cent {

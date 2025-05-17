@@ -28,8 +28,8 @@ var validOrderPayload = ordermodel.CreateOrderPayload{
 }
 
 var products = []productmodel.Product{
-	{ID: "prod-1", Price: price.Price(10)},
-	{ID: "prod-2", Price: price.Price(20)},
+	{ID: "prod-1", Price: price.Dollar(10)},
+	{ID: "prod-2", Price: price.Dollar(20)},
 }
 
 var order = ordermodel.Order{
@@ -139,7 +139,7 @@ func TestCreateOrder(t *testing.T) {
 		_ = json.Unmarshal(rr.Body.Bytes(), &actualOrder)
 		assert.Equal(t, order, actualOrder)
 		// Prices should be converted to main price
-		assert.Equal(t, order.Products[0].Price, price.Price(10))
+		assert.Equal(t, order.Products[0].Price, price.Dollar(10))
 		assert.Equal(t, order.OrderItems[0].PriceInCents, price.Cent(1000))
 	})
 
@@ -172,7 +172,7 @@ func TestCreateOrder(t *testing.T) {
 		_ = json.Unmarshal(rr.Body.Bytes(), &actualOrder)
 		assert.Equal(t, order, actualOrder)
 		// Prices should be converted to main price
-		assert.Equal(t, order.Products[0].Price, price.Price(10))
+		assert.Equal(t, order.Products[0].Price, price.Dollar(10))
 		assert.Equal(t, order.OrderItems[0].PriceInCents, price.Cent(1000))
 	})
 }
@@ -180,7 +180,7 @@ func TestCreateOrder(t *testing.T) {
 func TestUpdateOrderItemPrices(t *testing.T) {
 	t.Run("should update price for matching product IDs", func(t *testing.T) {
 		payload := ordermodel.CreateOrderPayload{OrderItems: []ordermodel.OrderItem{{ProductID: "1"}, {ProductID: "2"}}}
-		products := []productmodel.Product{{ID: "1", Price: price.Price(100)}, {ID: "2", Price: 200}}
+		products := []productmodel.Product{{ID: "1", Price: price.Dollar(100)}, {ID: "2", Price: 200}}
 
 		updateOrderItemPrices(payload, products)
 
@@ -191,7 +191,7 @@ func TestUpdateOrderItemPrices(t *testing.T) {
 	t.Run("should not change price if product ID does not match", func(t *testing.T) {
 		payload := ordermodel.CreateOrderPayload{OrderItems: []ordermodel.OrderItem{{ProductID: "1"}, {ProductID: "3"}}}
 
-		products := []productmodel.Product{{ID: "1", Price: price.Price(100)}, {ID: "2", Price: price.Price(200)}}
+		products := []productmodel.Product{{ID: "1", Price: price.Dollar(100)}, {ID: "2", Price: price.Dollar(200)}}
 
 		updateOrderItemPrices(payload, products)
 
@@ -225,7 +225,7 @@ func TestCalculateOrderSummary(t *testing.T) {
 		_ = json.Unmarshal(rr.Body.Bytes(), &actualOrder)
 		assert.Equal(t, order, actualOrder)
 		// Prices should be converted to main price
-		assert.Equal(t, order.Products[0].Price, price.Price(10))
+		assert.Equal(t, order.Products[0].Price, price.Dollar(10))
 		assert.Equal(t, order.OrderItems[0].PriceInCents, price.Cent(1000))
 		orderDBMock.AssertNotCalled(t, "InsertOrder")
 	})

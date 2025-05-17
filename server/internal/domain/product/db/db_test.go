@@ -65,7 +65,7 @@ func TestProductDBOperations(t *testing.T) {
 		productsData[0].Price = 100
 		assert.Equal(t, len(updatedProducts), len(productsData))
 		assert.NoError(t, err)
-		assert.Equal(t, updatedProducts[0].Price, price.Price(100))
+		assert.Equal(t, updatedProducts[0].Price, price.Dollar(100))
 		for index, p := range updatedProducts {
 			assert.Equal(t, p.ID, insertedProducts[index].ID)
 		}

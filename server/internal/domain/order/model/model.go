@@ -10,13 +10,13 @@ import (
 )
 
 type OrderItem struct {
-	ID           string      `json:"id,omitempty"`
-	ProductID    string      `json:"productId"`
-	PriceInCents price.Cent  `json:"priceInCents,omitempty"`
-	Price        price.Price `json:"price,omitempty"`
-	Quantity     int         `json:"quantity"`
-	CreatedAt    *time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt    *time.Time  `json:"updatedAt,omitempty"`
+	ID           string       `json:"id,omitempty"`
+	ProductID    string       `json:"productId"`
+	PriceInCents price.Cent   `json:"priceInCents,omitempty"`
+	Price        price.Dollar `json:"price,omitempty"`
+	Quantity     int          `json:"quantity"`
+	CreatedAt    *time.Time   `json:"createdAt,omitempty"`
+	UpdatedAt    *time.Time   `json:"updatedAt,omitempty"`
 }
 
 type Order struct {
