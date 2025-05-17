@@ -1,7 +1,11 @@
 import { ProductList } from "../../product/components/ProductList";
 import { Cart } from "../../cart/components/Cart";
 import { useBreakpoint } from "../../common/hooks/useBreakpoints";
-import { HomeContainer } from "./Styled";
+import {
+  HomeContainer,
+  ProductListContainer,
+  StickyCartWrapper,
+} from "./Styled";
 
 export const Home = () => {
   const breakpoint = useBreakpoint();
@@ -9,8 +13,12 @@ export const Home = () => {
   return (
     <>
       <HomeContainer direction="row" breakpoint={breakpoint}>
-        <ProductList />
-        <Cart />
+        <ProductListContainer breakpoint={breakpoint}>
+          <ProductList />
+        </ProductListContainer>
+        <StickyCartWrapper breakpoint={breakpoint}>
+          <Cart />
+        </StickyCartWrapper>
       </HomeContainer>
     </>
   );

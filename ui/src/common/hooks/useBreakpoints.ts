@@ -6,8 +6,8 @@ export function useBreakpoint(): Breakpoint {
   const getBreakpoint = (width: number): Breakpoint => {
     if (width < 576) return "xs";
     if (width >= 576 && width < 768) return "sm";
-    if (width >= 768 && width < 992) return "m";
-    if (width >= 992 && width < 1440) return "l";
+    if (width >= 768 && width < 1050) return "m";
+    if (width >= 1050 && width < 1440) return "l";
     return "xl";
   };
 
