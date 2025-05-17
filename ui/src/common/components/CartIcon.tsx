@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import cartIcon from "../../assets/cart-icon.svg";
 
 export const StickyCartIcon = styled.div`
   position: fixed;
@@ -18,5 +19,5 @@ export const StickyCartIcon = styled.div`
 `;
 
 export const CartIcon = ({ onClick }: { onClick: () => void }) => (
-  <StickyCartIcon onClick={onClick}>🛒</StickyCartIcon>
+  <StickyCartIcon onClick={onClick}>{<img src={cartIcon} />}</StickyCartIcon>
 );

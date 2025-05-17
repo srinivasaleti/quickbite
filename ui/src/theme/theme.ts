@@ -15,6 +15,7 @@ export const theme = {
     },
     coral: {
       500: "#C66C50",
+      700: "#C63B0F",
     },
     brown: {
       500: "#BC7863",

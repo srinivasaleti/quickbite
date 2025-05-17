@@ -3,10 +3,11 @@ import { FlexBox, Text } from "../../../common";
 import type { Breakpoint } from "../../../common/hooks/useBreakpoints";
 
 export const Card = styled.div<{ breakpoint: Breakpoint }>`
+  position: relative;
   border-radius: 12px;
   padding: ${({ theme }) => theme.margins.sm};
-  width: ${({ breakpoint }) => (breakpoint === "xs" ? "100%" : "250px")};
-  height: ${({ breakpoint }) => (breakpoint === "xs" ? "auto" : "250px")};
+  width: ${({ breakpoint }) => (breakpoint === "xs" ? "100%" : "270px")};
+  height: ${({ breakpoint }) => (breakpoint === "xs" ? "auto" : "350px")};
 `;
 
 export const Image = styled.img<{ breakpoint: Breakpoint }>`
@@ -34,4 +35,10 @@ export const Price = styled(Text)`
 export const InfoBox = styled(FlexBox)`
   margin-top: 36px;
   gap: ${({ theme }) => theme.margins.sm};
+`;
+
+export const AddToCartButtonContainer = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-55%) translateY(-50%);
 `;

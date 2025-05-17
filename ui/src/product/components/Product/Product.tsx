@@ -1,7 +1,16 @@
 import React from "react";
 import type { ProductType } from "../../types/product";
-import { Card, Category, Image, InfoBox, Name, Price } from "./Styled";
+import {
+  AddToCartButtonContainer,
+  Card,
+  Category,
+  Image,
+  InfoBox,
+  Name,
+  Price,
+} from "./Styled";
 import { useBreakpoint } from "../../../common/hooks/useBreakpoints";
+import { AddToCartButton } from "../../../cart/components/AddToCartButton/AddToCartButton";
 
 type ProductProps = {
   product: ProductType;
@@ -11,11 +20,16 @@ export const Product: React.FC<ProductProps> = ({ product }) => {
   const breakpoint = useBreakpoint();
   return (
     <Card breakpoint={breakpoint}>
-      <Image
-        src={product.imageUrl}
-        alt={product.name}
-        breakpoint={breakpoint}
-      />
+      <div style={{ position: "relative" }}>
+        <Image
+          src={product.imageUrl}
+          alt={product.name}
+          breakpoint={breakpoint}
+        />
+        <AddToCartButtonContainer>
+          <AddToCartButton />
+        </AddToCartButtonContainer>
+      </div>
       <InfoBox>
         <Category>{product.category}</Category>
         <Name>{product.name}</Name>
