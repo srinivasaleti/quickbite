@@ -40,6 +40,7 @@ func TestInsertOrder(t *testing.T) {
 	assert.NotNil(t, order.OrderItems[1].ID)
 	assert.Equal(t, order.OrderItems, orderPayload.OrderItems)
 	assert.Equal(t, order.CouponCode, orderPayload.CouponCode)
+	testContainer.TearDown()
 }
 
 func ToPtr[T any](v T) *T {

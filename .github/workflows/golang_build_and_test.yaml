@@ -19,4 +19,4 @@ jobs:
       - name: Run Coverage Tests
         run: make go-coverage
       - name: Build
-        run: make go-build
+        run: make server-build

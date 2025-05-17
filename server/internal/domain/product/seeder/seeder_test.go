@@ -32,4 +32,5 @@ func TestSeeProducts(t *testing.T) {
 		assert.Equal(t, result.Products[0].Name, products[0].Name)
 		assert.Equal(t, result.Categories[0].Name, categories[0].Name)
 	})
+	testContainer.TearDown()
 }
