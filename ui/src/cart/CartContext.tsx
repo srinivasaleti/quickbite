@@ -10,6 +10,7 @@ type CartContextType = {
   getQuantity: (productId: string) => number;
   getTotalItems: () => number;
   getTotal: () => number;
+  clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -90,6 +91,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  const clearCart = () => setCart({});
+
   return (
     <CartContext.Provider
       value={{
@@ -100,6 +103,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         getQuantity,
         getTotalItems,
         getTotal,
+        clearCart,
       }}
     >
       {children}

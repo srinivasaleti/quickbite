@@ -97,14 +97,16 @@ export const OrderTotal = styled(Text)`
   color: ${({ theme }) => theme.colors.grey["500"]};
 `;
 
-export const ConfirmBtn = styled.button`
+export const ConfirmBtn = styled.button<{ disabled: boolean }>`
   margin-top: 25px;
   width: 100%;
   padding: 14px;
-  background-color: ${({ theme }) => theme.colors.coral["700"]};
+  background-color: ${({ theme, disabled }) =>
+    disabled ? theme.colors.coral["500"] : theme.colors.coral["700"]};
   border: none;
   border-radius: 25px;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme, disabled }) =>
+    disabled ? theme.colors.grey : theme.colors.white};
   font-weight: ${({ theme }) => theme.fontWeights.semiBold};
   font-size: ${({ theme }) => theme.fontSizes.body};
   cursor: pointer;

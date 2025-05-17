@@ -5,6 +5,7 @@ import { useBreakpoint } from "../../../common/hooks/useBreakpoints";
 import { useCart } from "../../CartContext";
 import { EmptyCart } from "./EmptyCart";
 import { OrderSumary } from "./OrderSummary";
+import Modal from "../../../common/components/Modal";
 
 export const Cart = () => {
   const { fontWeights, colors } = useTheme();
@@ -20,6 +21,9 @@ export const Cart = () => {
         Your Cart ({totalItems})
       </Text>
       {totalItems === 0 ? <EmptyCart /> : <OrderSumary />}
+      <Modal>
+        <OrderSumary />
+      </Modal>
     </CartContainer>
   );
 };

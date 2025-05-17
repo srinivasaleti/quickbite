@@ -12,14 +12,20 @@ import {
   OrderTotal,
   PriceInfo,
 } from "./Styled";
+import { useOrder } from "../../hooks/useOrder";
 
 const DOLLAR = "$";
 
-export const OrderSumary = () => {
+export const OrderSumary = ({}: {}) => {
   const { cart, getTotal, removeCompleteProduct } = useCart();
   const breakpoint = useBreakpoint();
   const showFullWidthContainer = breakpoint != "l" && breakpoint !== "xl";
   const theme = useTheme();
+  const { placeOrder, loading } = useOrder();
+
+  const onConfirmOrder = () => {
+    placeOrder();
+  };
 
   return (
     <OrderSummaryContainer showFullWidthContainer={showFullWidthContainer}>
@@ -73,7 +79,9 @@ export const OrderSumary = () => {
         </Text>
       </OrderTotal>
 
-      <ConfirmBtn>Confirm Order</ConfirmBtn>
+      <ConfirmBtn disabled={loading} onClick={onConfirmOrder}>
+        Confirm Order
+      </ConfirmBtn>
     </OrderSummaryContainer>
   );
 };

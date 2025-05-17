@@ -14,7 +14,7 @@ interface ApiErrorResponse {
 }
 export function useApi<T = unknown>() {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ApiErrorResponse | null>(null);
 
   const request = async ({
