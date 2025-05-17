@@ -6,9 +6,12 @@ import {
   ProductListContainer,
   StickyCartWrapper,
 } from "./Styled";
+import { CartIcon } from "../../common/components/CartIcon";
+import Modal, { useModal } from "../../common/components/Modal";
 
 export const Home = () => {
   const breakpoint = useBreakpoint();
+  const { openModal } = useModal();
 
   return (
     <>
@@ -16,9 +19,16 @@ export const Home = () => {
         <ProductListContainer breakpoint={breakpoint}>
           <ProductList />
         </ProductListContainer>
-        <StickyCartWrapper breakpoint={breakpoint}>
+        {breakpoint == "l" || breakpoint == "xl" ? (
+          <StickyCartWrapper breakpoint={breakpoint}>
+            <Cart />
+          </StickyCartWrapper>
+        ) : (
+          <CartIcon onClick={openModal} />
+        )}
+        <Modal>
           <Cart />
-        </StickyCartWrapper>
+        </Modal>
       </HomeContainer>
     </>
   );

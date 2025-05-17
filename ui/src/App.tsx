@@ -1,11 +1,14 @@
 import { ToastContainer } from "react-toastify";
 import { Home } from "./pages/home";
+import { ModalProvider } from "./common/components/Modal";
 
 function App() {
   return (
     <>
-      <Home />
-      <ToastContainer />
+      <ModalProvider>
+        <Home />
+        <ToastContainer />
+      </ModalProvider>
     </>
   );
 }
