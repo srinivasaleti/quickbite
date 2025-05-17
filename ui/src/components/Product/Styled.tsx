@@ -15,17 +15,24 @@ export const Image = styled.img`
   border-radius: 8px;
 `;
 
-export const Name = styled.h3`
-  margin: 8px 0 4px;
-  font-size: 16px;
+export const Name = styled.span`
+  display: block;
+  color: ${({ theme }) => theme.colors.grey[700]};
+  font-size: ${({ theme }) => theme.fontSizes.productName};
+  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
+  margin-top: ${({ theme }) => theme.margins.sm};
 `;
 
-export const Category = styled.p`
-  color: gray;
-  font-size: 13px;
+export const Category = styled.span`
+  display: block;
+  color: ${({ theme }) => theme.colors.grey[500]};
+  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
+  margin-top: ${({ theme }) => theme.margins.sm};
 `;
 
-export const Price = styled.p`
-  font-weight: bold;
-  margin-top: 4px;
+export const Price = styled.span`
+  display: block;
+  color: ${({ theme }) => theme.colors.brown[500]};
+  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
+  margin-top: ${({ theme }) => theme.margins.sm};
 `;

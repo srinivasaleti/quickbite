@@ -10,8 +10,8 @@ export const Product: React.FC<ProductProps> = ({ product }) => {
   return (
     <Card>
       <Image src={product.imageUrl} alt={product.name} />
-      <Name>{product.name}</Name>
       <Category>{product.category}</Category>
+      <Name>{product.name}</Name>
       <Price>${product.price.toFixed(2)}</Price>
     </Card>
   );
