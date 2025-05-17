@@ -1,4 +1,4 @@
-compose-up: compose-down server-build ## Start Docker Containers using `docker compose up`	
+compose-up: compose-down ui-build server-build ## Start Docker Containers using `docker compose up`	
 	docker compose -f tools/docker/quickbite/docker-compose.yaml up --build --watch &
 
 compose-down: ## Stop Docker Containers using `docker compose down`	

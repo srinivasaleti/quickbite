@@ -12,3 +12,5 @@ help:
 app-dev: app-down ui-dev install-air server-dev ## Run server first, then UI
 
 app-down: server-down ui-down
+
+app-up: app-down compose-up
