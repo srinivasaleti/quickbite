@@ -24,7 +24,7 @@ const products: ProductType[] = [
   },
 ];
 
-const ProductList: React.FC = () => {
+export const ProductList: React.FC = () => {
   return (
     <div>
       <h2>Desserts</h2>
@@ -37,4 +37,3 @@ const ProductList: React.FC = () => {
   );
 };
 
-export default ProductList;

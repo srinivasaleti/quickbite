@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FlexBox, Text } from "../../common";
+import { FlexBox, Text } from "../../../common";
 
 export const Card = styled.div`
   border-radius: 12px;
