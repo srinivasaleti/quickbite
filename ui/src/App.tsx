@@ -1,5 +1,11 @@
+import ProductList from "./components/ProductList/ProductList";
+
 function App() {
-  return <>QuickByte</>;
+  return (
+    <>
+      <ProductList />
+    </>
+  );
 }
 
 export default App;
