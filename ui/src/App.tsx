@@ -1,13 +1,16 @@
 import { ToastContainer } from "react-toastify";
 import { Home } from "./pages/home";
 import { ModalProvider } from "./common/components/Modal";
+import { CartProvider } from "./cart/CartContext";
 
 function App() {
   return (
     <>
       <ModalProvider>
-        <Home />
-        <ToastContainer />
+        <CartProvider>
+          <Home />
+          <ToastContainer />
+        </CartProvider>
       </ModalProvider>
     </>
   );

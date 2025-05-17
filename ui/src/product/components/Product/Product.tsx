@@ -11,6 +11,7 @@ import {
 } from "./Styled";
 import { useBreakpoint } from "../../../common/hooks/useBreakpoints";
 import { AddToCartButton } from "../../../cart/components/AddToCartButton/AddToCartButton";
+import { useCart } from "../../../cart/CartContext";
 
 type ProductProps = {
   product: ProductType;
@@ -18,6 +19,8 @@ type ProductProps = {
 
 export const Product: React.FC<ProductProps> = ({ product }) => {
   const breakpoint = useBreakpoint();
+  const { addToCart, removeFromCart, getQuantity } = useCart();
+
   return (
     <Card breakpoint={breakpoint}>
       <div style={{ position: "relative" }}>
@@ -27,7 +30,11 @@ export const Product: React.FC<ProductProps> = ({ product }) => {
           breakpoint={breakpoint}
         />
         <AddToCartButtonContainer>
-          <AddToCartButton />
+          <AddToCartButton
+            onAdd={() => addToCart(product)}
+            onRemove={() => removeFromCart(product.id)}
+            count={getQuantity(product.id)}
+          />
         </AddToCartButtonContainer>
       </div>
       <InfoBox>
