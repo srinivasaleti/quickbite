@@ -26,8 +26,8 @@ func getTotalPrice(order ordermodel.Order, isValidCoupon bool) (price.Cent, erro
 		return price.Cent(total).Subtract(price.Cent(total).Percentize(18)), nil
 	// BUYGETONE gives the lowest priced item for free
 	case "BUYGETONE":
-		if len(order.OrderItems) < 2 {
-			return total, errors.New("add atleast 2 items to apply the coupon")
+		if getOrderQuantity(order) < 2 {
+			return total, errors.New("Add atleast 2 items to apply the coupon")
 		}
 		lowest := findLowestUnitPrice(order.OrderItems)
 		return price.Cent(total).Subtract(lowest), nil
@@ -35,6 +35,14 @@ func getTotalPrice(order ordermodel.Order, isValidCoupon bool) (price.Cent, erro
 		// There is not mention about rest of the coupons. So going with a 10% discusount for now.
 		return price.Cent(total).Subtract(price.Cent(total).Percentize(10)), nil
 	}
+}
+
+func getOrderQuantity(order ordermodel.Order) int {
+	quantity := 0
+	for _, item := range order.OrderItems {
+		quantity = quantity + item.Quantity
+	}
+	return quantity
 }
 
 func totalPriceInCents(payload ordermodel.Order) price.Cent {

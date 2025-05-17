@@ -73,7 +73,7 @@ func TestGetTotalPrice(t *testing.T) {
 		}
 		total, err := getTotalPrice(order, true)
 		assert.Error(t, err)
-		assert.EqualError(t, err, "add atleast 2 items to apply the coupon")
+		assert.EqualError(t, err, "Add atleast 2 items to apply the coupon")
 		assert.Equal(t, price.Cent(650), total)
 	})
 
