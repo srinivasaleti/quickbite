@@ -4,7 +4,8 @@ import { Text } from "../../../common";
 export const Grid = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
+  margin-top: 30px;
 `;
 
 export const NoProductsMessage = styled(Text)`

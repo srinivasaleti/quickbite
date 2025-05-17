@@ -4,10 +4,11 @@ import { Product } from "../Product/Product";
 import { useProducts } from "../../hooks";
 import { Loader } from "../../../common/components/Loader";
 import { Text } from "../../../common";
+import { useTheme } from "styled-components";
 
 export const ProductList: React.FC = () => {
   const { loading, products } = useProducts();
-
+  const { fontWeights } = useTheme();
   if (loading) {
     return (
       <div style={{ height: "100vh" }}>
@@ -27,7 +28,9 @@ export const ProductList: React.FC = () => {
 
   return (
     <div>
-      <h2>Desserts</h2>
+      <Text size="36px" weight={fontWeights.semiBold}>
+        Desserts
+      </Text>
       <Grid>
         {products?.map((product) => (
           <Product key={product.id} product={product} />

@@ -13,9 +13,14 @@ export const theme = {
       500: "#BCB0AD",
       700: "#544946",
     },
+    coral: {
+      500: "#C66C50",
+    },
     brown: {
       500: "#BC7863",
     },
+    background: "#fbf3f1",
+    white: "white",
   },
   fontWeights: {
     regular: 400,

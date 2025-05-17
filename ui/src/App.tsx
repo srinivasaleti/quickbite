@@ -1,10 +1,10 @@
 import { ToastContainer } from "react-toastify";
-import { ProductList } from "./product/components/ProductList";
+import { Home } from "./pages/home";
 
 function App() {
   return (
     <>
-      <ProductList />
+      <Home />
       <ToastContainer />
     </>
   );
