@@ -1,86 +1,76 @@
-# Shopping Cart
+# Developer Guide
 
-Build a mini food ordering web app featuring product listing and a functional shopping cart.\
-Prioritize correctness in functionality while getting it to look as close to the design as possible.
+This project uses:
 
-For this task you will need to integrate to our demo e-commerce API for listing products and placing orders.
+- React (with TypeScript) for UI
+- Go (version 1.23 or above) for backend server
+- Node.js version 20 or above
+- Yarn for frontend package manager
+- Makefile for commands
 
-**API Reference**
+---
 
-You can find our [API Documentation](https://orderfoodonline.deno.dev/public/openapi.html) here.
+## Requirements
 
-API documentation is based on [OpenAPI3.1](https://swagger.io/specification/v3/) specification.
-You can also find spec file [here](https://orderfoodonline.deno.dev/public/openapi.yaml).
- 
-**Functional Requirements**
+Make sure you have these installed before starting:
 
-- Display products with images
-- Add items to the cart and remove items
-- Show order total correctly
-- Increase or decrease item count in the cart
-- Show order confirmation after placing the order
-- Interactive hover and focus states for elements
+- Node.js >= 20
+- Go >= 1.23
+- Yarn (you can install using `npm install -g yarn`)
+- Make (comes pre-installed on Linux/macOS)
 
-**Bonus Goals**
+---
 
-- Allow users to enter a discount code (above the "Confirm Order" button)
-- Discount code `HAPPYHOURS` applies 18% discount to the order total
-- Discount code `BUYGETONE` gives the lowest priced item for free
-- Responsive design based on device's screen size
+## Start App in Development Mode
 
-**Are You a Full Stack Developer??**
+When you work in local you might want to have a db running inside a docker. To start db
 
-Impress us by implementing your own version of the API based on the OpenAPI specification.\
-Choose any language or framework of your choice. For example our top pick for backend is [Go](https://go.dev)
+```bash
+make compose-quickbitedb-up
+```
 
-> The API immplementation example available to you at orderfoodonline.deno.dev/api is simplified and doesn't handle some edge cases intentionally.
-> Use your best judgement to build a Robust API server.
+To start both the server and the UI:
 
-## Design
+```bash
+make app-dev SERVER_PORT=<server_port>
+```
 
-You can find a [Figma](https://figma.com) design file `design.fig` that you can use.
-You might have to use your best judgement for some mobile layout designs and spacing.
+This will:
 
-### Style Guide
+- Start the Go server on given server port (default: 8080)
+- Start the React UI on port 5173
 
-The designs were created to the following widths:
+Now you can access:
 
-- Mobile: 375px
-- Desktop: 1440px
+- UI : http://localhost:5173
+- Server: http://localhost:8080 or http://localhost:<server_port>
 
-> 💡 These are just the design sizes. Ensure content is responsive and meets WCAG requirements by testing the full range of screen sizes from 320px to large screens.
+## Stop Server
 
-**Typography**
+To stop the running server:
 
-- Font size (product names): 16px
+```bash
+make app-down
+```
 
-### Font
+This will:
 
-- Family: [Red Hat Text](https://fonts.google.com/specimen/Red+Hat+Text)
-- Weights: 400, 600, 700
+- Stop the Go server on given server port (default: 8080)
+- Stop the React UI on port 5173
 
-## Getting Started
+## Data Seeding for Categories and Products
 
-Feel free to use any tool or workflow ou are comformtable with.\
-Here is an example workflow (you can use it as a reference or use your own workflow)
+When the server starts, it runs the seeder which automatically adds or updates data in the database.
 
-1. Create a new public repository on [GitHub](https://github.com) (alternatively you can use GitLab, BitBucket or Git server of your choice).
-   If you are creating your repository on GitHub, you can chose to use this repository as a starting template. (Click on Use template button at the top)
-2. Look through the deisngs to plan your project. This will help you design UI libraries or tools.
-3. Create a [Vite](https://vite.dev) app to bootstrap a modern front-end project (alternatively use the framework of your choice).
-4. Structure your HTML and preview before theming and adding interactive functionality.
-5. Test and Iterate to build more features
-6. Deploy your app anywhere securely. You may use AWS, Vercel, Deno Deploy, Surge, CloudFlare Pages or some other web app deployment services.
-7. Additionally configure your repository to automatically publish your app on new commit push (CI).
+### Where the Data Lives
 
-> 💡 Replace or Modify this README to explain your solution and how to run and test it.
+- Categories data is in: `server/internal/domain/product/seeder/data/categories.yaml`
+  - Here, **category name** is used as the key to match data between the database and YAML file.
+- Products data is in: `server/internal/domain/product/seeder/data/products.yaml`
+  - Here, **externalID** is used as the key to match data between the database and YAML file.
 
-_By following these guidelines, you should be able to build a functional and visually appealing mini e-commerce shopping portal that meets the minimum requirements and bonus goals. Good luck! 🚀_
+Both files have the details of products and categories in simple YAML format.
 
-**Resources**
+### Adding New Data
 
-- API documentation: https://orderfoodonline.deno.dev/public/openapi.html
-- API specification: https://orderfoodonline.deno.dev/public/openapi.yaml
-- Figma design file: [design.fig](./design.fig)
-- Red Hat Text font: https://fonts.google.com/specimen/Red+Hat+Text
-
+Feel free to add new categories or products to these YAML files. When the server restarts, the seeder will update the database with your new data automatically.
