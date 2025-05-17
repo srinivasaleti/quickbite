@@ -1,7 +1,7 @@
 import { useTheme } from "styled-components";
 import { FlexBox, Text } from "../../../common";
-import { Image, ImageContainer } from "./Styled";
 import emptyCart from "../../../assets/empty-cart.svg";
+import { Image, ImageContainer } from "./Styled";
 
 export const EmptyCart = () => {
   const { fontWeights, colors } = useTheme();

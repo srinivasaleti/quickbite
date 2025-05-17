@@ -3,10 +3,13 @@ import type { CartItems } from "./types";
 import type { ProductType } from "../product/types/product";
 
 type CartContextType = {
+  cart: CartItems;
   addToCart: (product: ProductType) => void;
   removeFromCart: (productId: string) => void;
   removeCompleteProduct: (productId: string) => void;
   getQuantity: (productId: string) => number;
+  getTotalItems: () => number;
+  getTotal: () => number;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -70,13 +73,33 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const getQuantity = (productId: string): number => {
     return cart?.[productId]?.quantity || 0;
   };
+
+  const getTotal = (): number => {
+    const total = Object.keys(cart).reduce(
+      (prev, curr) =>
+        prev + cart[curr].product.priceInCents * cart[curr].quantity,
+      0
+    );
+    return total / 100;
+  };
+
+  const getTotalItems = (): number => {
+    return Object.keys(cart).reduce(
+      (prev, curr) => prev + cart[curr].quantity,
+      0
+    );
+  };
+
   return (
     <CartContext.Provider
       value={{
+        cart,
         addToCart,
         removeFromCart,
         removeCompleteProduct,
         getQuantity,
+        getTotalItems,
+        getTotal,
       }}
     >
       {children}
