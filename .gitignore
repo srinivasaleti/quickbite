@@ -132,3 +132,6 @@ dist
 bin/
 coverage.out
 coupons/*.gz
+
+server/web/assets/
+server/web/assets/index.html

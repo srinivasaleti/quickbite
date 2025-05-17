@@ -12,6 +12,7 @@ import (
 	"github.com/srinivasaleti/quickbite/server/internal/domain/product"
 	productsSeeder "github.com/srinivasaleti/quickbite/server/internal/domain/product/seeder"
 	"github.com/srinivasaleti/quickbite/server/pkg/logger"
+	"github.com/srinivasaleti/quickbite/server/web"
 )
 
 type IServer interface {
@@ -73,6 +74,13 @@ func (s *Server) handler(db database.DB) *chi.Mux {
 		product.AddRoutesToAppRouter(api)
 		order.AddRoutesToAppRouter(api)
 	})
+
+	// Serve React app for any route NOT starting with /api
+	staticHandler := web.StaticFilesHandler()
+
+	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		staticHandler.ServeHTTP(w, r)
+	}))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Found", http.StatusNotFound)
