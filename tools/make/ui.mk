@@ -14,3 +14,6 @@ ui-down: # Kill ui which runs on port 5173 by default
     else \
         echo "UI is not running"; \
     fi
+
+ui-build: ui-install  ## Run UI in dev mode
+	cd ui && yarn build
