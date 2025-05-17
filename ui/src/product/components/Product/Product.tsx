@@ -1,16 +1,21 @@
 import React from "react";
 import type { ProductType } from "../../types/product";
 import { Card, Category, Image, InfoBox, Name, Price } from "./Styled";
+import { useBreakpoint } from "../../../common/hooks/useBreakpoints";
 
 type ProductProps = {
   product: ProductType;
 };
 
 export const Product: React.FC<ProductProps> = ({ product }) => {
-
+  const breakpoint = useBreakpoint();
   return (
-    <Card>
-      <Image src={product.imageUrl} alt={product.name} />
+    <Card breakpoint={breakpoint}>
+      <Image
+        src={product.imageUrl}
+        alt={product.name}
+        breakpoint={breakpoint}
+      />
       <InfoBox>
         <Category>{product.category}</Category>
         <Name>{product.name}</Name>
