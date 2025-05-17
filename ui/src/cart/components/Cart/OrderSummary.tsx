@@ -15,6 +15,7 @@ import {
 import { useOrder } from "../../hooks/useOrder";
 import type { OrderSummaryResponse } from "../../types";
 import { useModal } from "../../../common/components/Modal";
+import { CouponCodeInput } from "./CouponCodeInput";
 
 const DOLLAR = "$";
 
@@ -29,7 +30,7 @@ export const OrderSumary = ({
   const isMobileView = breakpoint != "l" && breakpoint !== "xl";
   const theme = useTheme();
   const { placeOrder, loading } = useOrder();
-  const { removeCompleteProduct, setOrder } = useCart();
+  const { removeCompleteProduct, error, setOrder, setError } = useCart();
   const { closeModal } = useModal();
 
   const onConfirmOrder = async () => {
@@ -137,6 +138,17 @@ export const OrderSumary = ({
             </Text>
           </OrderTotal>
         </FlexBox>
+        {!isOrderPlaced ? (
+          <CouponCodeInput onCouponRemoved={() => setError(undefined)} />
+        ) : orderSummary?.couponCode ? (
+          <Text
+            weight={theme.fontWeights.bold}
+            color={theme.colors.coral["500"]}
+          >
+            Applied Coupon: {orderSummary?.couponCode}
+          </Text>
+        ) : null}
+        {error && <Text color={theme.colors.coral["700"]}>{error}</Text>}
         <ConfirmBtn
           disabled={loading}
           onClick={isOrderPlaced ? onStartNewOrder : onConfirmOrder}

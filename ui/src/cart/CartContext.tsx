@@ -14,6 +14,10 @@ type CartContextType = {
   order?: OrderSummaryResponse;
   cartOrderSummary?: OrderSummaryResponse;
   setOrder: (order: OrderSummaryResponse | undefined) => void;
+  coupon: string;
+  setCoupon: (coupon: string) => void;
+  error?: string;
+  setError: (error?: string) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -23,9 +27,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [cart, setCart] = useState<CartItems>({});
   const [order, setOrder] = useState<OrderSummaryResponse | undefined>();
+  const [coupon, setCoupon] = useState("");
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const addToCart = (product: ProductType) => {
     setOrder(undefined);
+    setError(undefined);
     setCart((prev) => {
       if (prev[product.id]) {
         return {
@@ -48,6 +55,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const removeFromCart = (productId: string) => {
     setOrder(undefined);
+    setError(undefined);
     setCart((prev) => {
       if (!prev[productId]) return prev;
 
@@ -71,6 +79,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const removeCompleteProduct = (productId: string) => {
     setOrder(undefined);
+    setError(undefined);
     setCart((prev) => {
       const newCart = { ...prev };
       delete newCart[productId];
@@ -98,7 +107,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  const clearCart = () => setCart({});
+  const clearCart = () => {
+    setCart({});
+    setCoupon("");
+  };
 
   const cartOrderSummary: OrderSummaryResponse = {
     totalPriceInCents: getTotalPriceInCents(),
@@ -126,8 +138,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         getTotal: getTotalPriceInCents,
         clearCart,
         setOrder,
+        coupon,
+        setCoupon,
         order,
         cartOrderSummary,
+        error,
+        setError,
       }}
     >
       {children}

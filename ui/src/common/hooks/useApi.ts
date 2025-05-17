@@ -8,7 +8,7 @@ const api = axios.create({
   },
 });
 
-interface ApiErrorResponse {
+export interface ApiErrorResponse {
   code: string;
   message: string;
 }
