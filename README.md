@@ -53,6 +53,8 @@ make app-up
 - Runs the app inside Docker on port 8080
 - Exposes the app to your system on port 18080
 
+Access app on: http://localhost:18080
+
 **_NOTE: If you are doing this first time it might take sometime 5-10mins. As it will install all go,ui packages and pull docker images._**
 
 # Start App in Development Mode
